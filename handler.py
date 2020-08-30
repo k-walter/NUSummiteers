@@ -76,7 +76,7 @@ def Submit(update, context):
 	logger.info("I'm in Submit()")
 	query = update.callback_query
 	query.answer()
-	msg = "Upload your activity proof!\n\n🖼️ *Photos/screenshots* - must reflect elevation gained, timestamp and identification.\n🎬 *Videos* - must overlay timestamp / begin with video of watch and record complete climb from bottom to top\n\nCheck our T&C (in the description) for more info."
+	msg = "Upload your activity proof!\n\n🖼 Photos/Screenshots - must reflect elevation gained, timestamp and identification/user ID (if applicable).\n🎬 Videos - must overlay timestamp / begin with video of time (on a phone/watch) and record complete climb from bottom to top\n\nCheck our T&C (in the description) for more info."
 	query.edit_message_text(msg, parse_mode='Markdown', reply_markup=goBackMarkup)
 	return SUBMIT
 

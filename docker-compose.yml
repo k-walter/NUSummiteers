@@ -8,7 +8,7 @@ services:
         volumes:
             - .:/usr/src/app
         env_file:
-            - config.env
+            - .env
         ports:
             - 41033:41033
 
