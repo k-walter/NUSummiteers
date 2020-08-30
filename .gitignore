@@ -1,4 +1,5 @@
 .*
 *.json
 *.sh
+*.env
 __pycache__
