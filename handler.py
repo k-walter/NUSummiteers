@@ -11,16 +11,6 @@ logging.basicConfig(level=logging.DEBUG,
 logger = logging.getLogger(__name__)
 tz = timezone(timedelta(hours=8))
 
-"""
-Conventions:
-	PascalCase for exported functions
-	camelCase for local functions
-	UPPER_CASE for states
-
-	don't stutter, eg exported functions will be handler.StartHandler
-	don't print(), use logging.info()
-"""
-
 # States
 START, END, SUBMIT, SUBMITTED, ASK, ASKED, PROGRESS, LEADERBOARD = map(str,range(8))
 
@@ -47,14 +37,14 @@ def Start(update, context):
 		[InlineKeyboardButton("🎥 Submit Proof", callback_data=SUBMIT)],
 		[InlineKeyboardButton("🤔 Ask a Question", callback_data=ASK)],
 		[InlineKeyboardButton("❌ End", callback_data=END)],
-		])
+	])
 
 	# Send message with text and appended InlineKeyboard
 	if isNewConvo:
 		update.message.reply_text(
 			"How can I help you today?",
 			reply_markup=reply_markup
-			)
+		)
 	else:
 		query = update.callback_query
 		query.answer()
@@ -95,7 +85,6 @@ def Ask(update, context):
 	query.edit_message_text("Ask your question below...", reply_markup=goBackMarkup)
 	return ASK
 
-@run_async
 def Asked(update, context):
 	postJSONToSlack({
 		"type": "mrkdwn",
@@ -103,6 +92,7 @@ def Asked(update, context):
 	})
 	context.bot.send_message(chat_id=update.effective_chat.id, text="We'll get back to you soon!")
 	return Start(update, context)
+
 @run_async
 def postJSONToSlack(json):
 	requests.post(os.getenv("SLACK_TOKEN"), json=json)
