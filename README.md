@@ -18,7 +18,7 @@ This bot relies heavily on Telegram-Python-Bot library and is created within a D
 1. Test if bot is deployed by giving `/start` command to https://t.me/nusummiteers_bot
 
 ## Coding Conventions
-- Credentials *MUST* be stored in `config.env`. Access them via `os.getenv(NAME)`.
+- Credentials *MUST* be stored in `.env` which will be loaded in `docker-compose`. Access them via `os.getenv(NAME)`.
 - `bot.py` is for a high-level state flow.
 - `handler.py` is for states, ie stateless endpoints (eg `/start`).
 - Don't stutter, eg exported functions `handler.StartHandler`
