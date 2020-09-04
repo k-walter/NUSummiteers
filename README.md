@@ -7,9 +7,9 @@ This bot relies heavily on Telegram-Python-Bot library and is created within a D
 ### Development
 1. Install `docker` (https://docs.docker.com/get-docker/) and `docker-compose` (https://docs.docker.com/compose/install/).
 1. In a terminal, run `docker-compose up`. This terminal window must not be closed while the program is running. You can use it to view outputs from `logging`.
-1. To access the docker container directly, open another terminal window and run `docker exec -it bot bash`.
-1. If you make any changes to `Dockerfile`, you have to rebuild the image to see your changes, by running `docker-compose build`. You can enter the container (previous step) and save the python dependencies by running `pip freeze > requirements.txt`.
 1. To reload the bot after making changes (eg to `*.py` or `.env`), go to the terminal running the program and press `Ctrl+c` or `Cmd+c` twice. Then, run `docker-compose up` again. I'm open to suggestions for easy hot reload setup.
+1. If you make any changes to `Dockerfile`, you have to rebuild the image to see your changes, by running `docker-compose build`
+1. To install additional python packages, enter the container on another terminal with `docker exec -it bot bash`, install with `pip install <name>`, and save the python dependencies by running `pip freeze > requirements.txt`.
 
 ### Deployment
 1. Install `heroku` CLI from https://devcenter.heroku.com/articles/heroku-cli
