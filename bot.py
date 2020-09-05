@@ -12,15 +12,12 @@ class Bot():
     def __init__(self):
         self.updater = Updater(token=os.getenv("BOT_TOKEN"), use_context=True)
         self.dispatcher = self.updater.dispatcher
+        self.job_queue = self.updater.job_queue
 
         # Attach handlers
         self.dispatcher.add_handler(self.ConversationHandler())
-        # self.dispatcher.add_handler(MessageHandler(self.isTextMsg, handler.echo))
-        # self.dispatcher.add_handler(InlineQueryHandler(handler.inline_caps))
-        # self.dispatcher.add_handler(MessageHandler(Filters.command, handler.Unknown))
 
         # Add schedules
-        self.job_queue = self.updater.job_queue
         # self.job_queue.run_repeating(job.Fact, 10)
         self.job_queue.run_daily(job.Fact, time(12,0,0))
         self.job_queue.run_daily(job.Fact, time(19,0,0))

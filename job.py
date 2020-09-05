@@ -25,8 +25,5 @@ def Leaderboard():
 def Progress():
 	return
 
-def Leaderboard():
-	return
-
 def FAQ():
 	return

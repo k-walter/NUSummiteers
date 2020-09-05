@@ -148,21 +148,24 @@ def Progress(update, context):
 	if pts is None:
 		msg = "Your points have not been updated yet"
 	else:
-		msg = f"Your have gained {pts} points from elevation as at {dt.strftime(dtFormat)}."
+		msg = f"Your points from elevation gained is {pts} points as at {dt.strftime(dtFormat)}."
 	context.bot.send_message(chat_id=query.from_user.id, text=msg)
 	return START
 
 def getPointsAndDatetime(uname):
-	cells = Points.findall(uname, in_column=1)
-	qry = [f"C{i.row}:D{i.row}" for i in cells if i]
-	# [[['Fri 8/5/2020 8:00:00', '1']], [['Sun 17/5/2020 8:00:00', '2']]]
-	res = Points.batch_get(qry) 
-	res = [i[0] for i in res if i]
-	res = [(datetime.strptime(d,dtFormat), int(p)) for d,p in res]
-	pts = sum(p for _,p in res)
-	dt = max(d for d,_ in res)
-	logging.info(res)
-	return pts, dt
+	try:
+		cells = Points.findall(uname, in_column=1)
+		qry = [f"C{i.row}:D{i.row}" for i in cells if i]
+		# [[['Fri 8/5/2020 8:00:00', '1']], [['Sun 17/5/2020 8:00:00', '2']]]
+		res = Points.batch_get(qry) 
+		res = [i[0] for i in res if i]
+		res = [(datetime.strptime(d,dtFormat), int(p)) for d,p in res]
+		pts = sum(p for _,p in res)
+		dt = max(d for d,_ in res)
+		return pts, dt
+	except Exception as e:
+		logging.warning(e)
+		return None, None
 
 def Unknown(update, context):
 	context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")
