@@ -30,10 +30,8 @@ class Bot():
                 handler.START: [
                     CallbackQueryHandler(handler.Submit, pattern=f"^{handler.SUBMIT}$"),
                     CallbackQueryHandler(handler.Ask, pattern=f"^{handler.ASK}$"),
-                    CallbackQueryHandler(handler.End, pattern=f"^{handler.END}$"),
-
                     CallbackQueryHandler(handler.Progress, pattern=f"^{handler.PROGRESS}$"),
-                    CallbackQueryHandler(handler.Leaderboard, pattern=f"^{handler.LEADERBOARD}$"),
+                    CallbackQueryHandler(handler.End, pattern=f"^{handler.END}$"),
                 ],
                 handler.SUBMIT: [
                     MessageHandler(self.isUpload, handler.Submitted),
@@ -44,9 +42,10 @@ class Bot():
                     MessageHandler(self.isTextMsg, handler.Asked),
                     CallbackQueryHandler(handler.Start, pattern=f"^{handler.START}$"),
                     CallbackQueryHandler(handler.End, pattern=f"^{handler.END}$"),
-                    # CallbackQueryHandler(handler.Asked, pattern=f"^{handler.ASKED}$"),
                 ],
-                # handler.PROGRESS: [],
+                handler.PROGRESS: [
+                    CallbackQueryHandler(handler.Start, pattern=f"^{handler.START}$"),
+                ],
             },
             fallbacks=[CommandHandler('start', handler.Start)]
         )
