@@ -20,7 +20,7 @@ gc = gspread.service_account(filename='client_secret.json')
 START, END, SUBMIT, SUBMITTED, ASK, ASKED, PROGRESS, LEADERBOARD = map(str,range(8))
 
 # Global variables
-sh = gc.open_by_url(os.getenv("DRIVE_POINTS"))
+sh = gc.open_by_url(os.getenv("DRIVE_URL"))
 Points = sh.worksheet("Points")
 Names = sh.worksheet("Names")
 
@@ -172,7 +172,7 @@ def Unknown(update, context):
 def postJSONGetPoints(user):
 	r = postJSON(json={
 		"query": f"SELECT D WHERE A='{user}'",
-		"url": os.getenv("DRIVE_POINTS"),
+		"url": os.getenv("DRIVE_URL"),
 	}, url="https://run.blockspring.com/api_v2/blocks/query-public-google-spreadsheet?&flatten=true")
 	# https://run.blockspring.com/api_v2/blocks/query-public-google-spreadsheet?&flatten=true&cache=true&expiry=3600
 	try:
