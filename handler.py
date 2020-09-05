@@ -1,6 +1,6 @@
 import os
 import requests
-from telegram import InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup, Bot
+import gspread
 from functools import wraps
 from telegram import InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup, ChatAction
 from telegram.ext import ConversationHandler
@@ -13,6 +13,8 @@ logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 tz = timezone(timedelta(hours=8))
+dtFormat = "%a %d/%m/%Y %H:%M:%S"
+gc = gspread.service_account(filename='client_secret.json')
 
 # States
 START, END, SUBMIT, SUBMITTED, ASK, ASKED, PROGRESS, LEADERBOARD = map(str,range(8))
