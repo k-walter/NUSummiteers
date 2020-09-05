@@ -2,12 +2,13 @@
 Sign up for NUSummiteers where your elevation gained accumulates to reaching a mountain’s summit! [This Telegram bot](https://t.me/nusummiteers_bot) is the main point of contact with participants for them to submit their video/photo proof of their ascent, and send any inquiries to us. Telegram was chosen for its unlimited storage, 2GB file size limits, and mature bot API.
 
 ## Getting Started
-This bot relies heavily on Telegram-Python-Bot library and is created within a Docker container for ease of installation and deployment. Due to time constraints, it was created using the polling approach, ie `while True`. The bot is then deployed on heroku, which is free and easy to use.
+This bot relies heavily on Telegram-Python-Bot and `gspread` library. It is developed within a Docker container for ease of installation and deployment. Due to time constraints, it was created using the polling approach, ie `while True`. The bot is then deployed on heroku, which is free and easy to use.
 
 ### Development
+1. You will need `client_secret.json` for Google service account and `.env`ironment variables. PM me.
 1. Install `docker` (https://docs.docker.com/get-docker/) and `docker-compose` (https://docs.docker.com/compose/install/).
 1. In a terminal, run `docker-compose up`. This terminal window must not be closed while the program is running. You can use it to view outputs from `logging`.
-1. To reload the bot after making changes (eg to `*.py` or `.env`), go to the terminal running the program and press `Ctrl+c` or `Cmd+c` twice. Then, run `docker-compose up` again. I'm open to suggestions for easy hot reload setup.
+1. After making changes (eg to `*.py` or `.env`), reload the bot by going to the terminal (above) and press `Ctrl+c` or `Cmd+c` twice. Then, run `docker-compose up` again. I'm open to suggestions for easy hot reload setup.
 1. If you make any changes to `Dockerfile`, you have to rebuild the image to see your changes, by running `docker-compose build`
 1. To install additional python packages, enter the container on another terminal with `docker exec -it bot bash`, install with `pip install <name>`, and save the python dependencies by running `pip freeze > requirements.txt`.
 
