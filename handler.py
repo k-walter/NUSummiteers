@@ -2,11 +2,13 @@ import os
 import requests
 from telegram import InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup, Bot
 from functools import wraps
+from telegram import InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup, ChatAction
 from telegram.ext import ConversationHandler
 from telegram.ext.dispatcher import run_async
 from datetime import timezone, timedelta, datetime
 import logging
 
+# initialisation
 logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -66,15 +68,16 @@ def Start(update, context):
 
 	# Send message with text and appended InlineKeyboard
 	if isNewConvo:
-		update.message.reply_text(
-			"How can I help you today?",
+		update.message.reply_photo(
+			photo="AgACAgUAAxkDAAIB1l9TCKTrMMWwU61ekflfLj90yAOuAAKKqjEbdimZVgK1Ii6AzP100QHta3QAAwEAAwIAA20AA6IGAwABGwQ", # fileID
+			caption="Hi there future Summiteer! Thank you for signing up for NUSummiteers. Don't forget that you will receive an extra chance in the lucky draw when you refer a friend to sign up for NUSummiteers! Stay tuned for updates here!",
 			reply_markup=reply_markup
 		)
 	else:
 		query = update.callback_query
 		query.answer()
-		query.edit_message_text(
-			"How can I help you today?",
+		query.edit_message_caption(
+			caption="Hi there future Summiteer! Thank you for signing up for NUSummiteers. Don't forget that you will receive an extra chance in the lucky draw when you refer a friend to sign up for NUSummiteers!",
 			reply_markup=reply_markup
 		)
 
@@ -84,15 +87,15 @@ def Start(update, context):
 def End(update, context):
 	query = update.callback_query
 	query.answer()
-	query.edit_message_text("🧗 Climb on!")
+	query.edit_message_caption("🧗 Climb on!")
 	return ConversationHandler.END
 
 def Submit(update, context):
 	logger.info("I'm in Submit()")
 	query = update.callback_query
 	query.answer()
-	msg = "Upload your activity proof!\n\n🖼 Photos/Screenshots - must reflect elevation gained, timestamp and identification/user ID (if applicable).\n🎬 Videos - must overlay timestamp / begin with video of time (on a phone/watch) and record complete climb from bottom to top\n\nCheck our T&C (in the description) for more info."
-	query.edit_message_text(msg, parse_mode='Markdown', reply_markup=goBackMarkup)
+	msg = "Upload your activity proof!\n\n🖼 *Photos/Screenshots* - must include elevation gained, timestamp and identification/user ID.\n🎬 *Videos* - must overlay timestamp or include a shot of a phone/watch depicting timestamp at the start of the video AND record complete climb(s) from bottom to top."
+	query.edit_message_caption(msg, parse_mode='Markdown', reply_markup=goBackMarkup)
 	return SUBMIT
 
 @run_async
@@ -104,10 +107,14 @@ def Submitted(update, context):
 	context.bot.forward_message(chat_id=os.getenv("CHANNEL_ID"), from_chat_id=update.effective_chat.id, message_id=update.message.message_id)
 	return Start(update, context)
 
+@run_async
+def postJSONToSlack(json):
+	postJSON(url=os.getenv("SLACK_TOKEN"), json=json)
+
 def Ask(update, context):
 	query = update.callback_query
 	query.answer()
-	query.edit_message_text("Ask your question below...", reply_markup=goBackMarkup)
+	query.edit_message_caption("Ask your question below...", reply_markup=goBackMarkup)
 	return ASK
 
 def Asked(update, context):
