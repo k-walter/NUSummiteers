@@ -51,6 +51,7 @@ def Start(update, context):
 	isNewConvo = update.message is not None
 	if isNewConvo:
 		logger.info("User %s started a conversation.", update.message.from_user.first_name)
+		AddToNames(uname=update.message.from_user.username, uid=update.message.from_user.id)
 
 	"""
 	InlineKeyboard displays buttons with text and returns with a string as callback_data
@@ -85,6 +86,17 @@ def Start(update, context):
 
 	# Tell ConversationHandler our current state
 	return START
+
+@run_async
+def AddToNames(uname, uid):
+	# find and save ID
+	try:
+		c = Names.find(uname, in_column=1)
+		Names.update_cell(c.row, 3, uid)
+	# create ID
+	except Exception as e:
+		logging.warning(e)
+		Names.append_row([uname, None, uid])
 
 def End(update, context):
 	query = update.callback_query
