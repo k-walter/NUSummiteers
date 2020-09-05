@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.DEBUG,
 logger = logging.getLogger(__name__)
 tz = timezone(timedelta(hours=8))
 
-def GetIDs(fn):
+def Broadcast(fn):
 	ids = handler.Names.get("C2:C")
 	ids = [int(i[0]) for i in ids if i]
 	for cid in ids:
@@ -17,7 +17,7 @@ def GetIDs(fn):
 
 def Fact(context):
 	# to get from yaml
-	SendToIDs(lambda cid: context.bot.send_message(chat_id=cid, text="Interesting fact"))
+	Broadcast(lambda cid: context.bot.send_message(chat_id=cid, text="Interesting fact"))
 
 def Leaderboard():
 	return

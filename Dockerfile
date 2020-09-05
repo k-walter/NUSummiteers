@@ -7,6 +7,7 @@ RUN python -m pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 COPY ./*.py ./
+COPY ./client_secret.json ./
 
 # RUN VERSION=2.0.0 && \
 #     OS=linux  # or "darwin" for OSX, "windows" for Windows. && \
