@@ -1,6 +1,6 @@
 import os
+import db
 import requests
-import gspread
 from functools import wraps
 from telegram import InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup, ChatAction
 from telegram.ext import ConversationHandler
@@ -13,16 +13,9 @@ logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 tz = timezone(timedelta(hours=8))
-dtFormat = "%a %d/%m/%Y %H:%M:%S"
-gc = gspread.service_account(filename='client_secret.json')
 
 # States
 START, END, SUBMIT, SUBMITTED, ASK, ASKED, PROGRESS, LEADERBOARD = map(str,range(8))
-
-# Global variables
-sh = gc.open_by_url(os.getenv("DRIVE_URL"))
-Points = sh.worksheet("Points")
-Names = sh.worksheet("Names")
 
 # Helper variables and functions
 goBackMarkup = InlineKeyboardMarkup([
@@ -51,7 +44,7 @@ def Start(update, context):
 	isNewConvo = update.message is not None
 	if isNewConvo:
 		logger.info("User %s started a conversation.", update.message.from_user.first_name)
-		AddToNames(uname=update.message.from_user.username, uid=update.message.from_user.id)
+		db.AddToNames(uname=update.message.from_user.username, uid=update.message.from_user.id)
 
 	"""
 	InlineKeyboard displays buttons with text and returns with a string as callback_data
@@ -87,17 +80,6 @@ def Start(update, context):
 	# Tell ConversationHandler our current state
 	return START
 
-@run_async
-def AddToNames(uname, uid):
-	# find and save ID
-	try:
-		c = Names.find(uname, in_column=1)
-		Names.update_cell(c.row, 3, uid)
-	# create ID
-	except Exception as e:
-		logging.warning(e)
-		Names.append_row([uname, None, uid])
-
 def End(update, context):
 	query = update.callback_query
 	query.answer()
@@ -116,7 +98,7 @@ def Submit(update, context):
 def Submitted(update, context):
 	logger.info("I'm in Submitted()")
 	context.bot.send_message(chat_id=update.effective_chat.id, text="Submission Received!")
-	msg = f"Name: *{update.message.from_user.first_name}* `t.me/{update.message.from_user.username}`\nTime: {datetime.now(tz)}"
+	msg = f"Name: *{update.message.from_user.first_name}* `t.me/{update.message.from_user.username}`\nTime: {datetime.now(tz).strftime(db.DtFormat)}"
 	context.bot.send_message(chat_id=os.getenv("CHANNEL_ID"), text=msg, parse_mode="Markdown")
 	context.bot.forward_message(chat_id=os.getenv("CHANNEL_ID"), from_chat_id=update.effective_chat.id, message_id=update.message.message_id)
 	return Start(update, context)
@@ -144,42 +126,14 @@ def Asked(update, context):
 def Progress(update, context):
 	query = update.callback_query
 	query.answer()
-	pts, dt = getPointsAndDatetime(query.from_user.username)
+	pts, dt = db.GetPointsAndDate(query.from_user.username)
 	if pts is None:
 		msg = "Your points have not been updated yet"
 	else:
-		msg = f"Your points from elevation gained is {pts} points as at {dt.strftime(dtFormat)}."
+		msg = f"Your points from elevation gained is {pts} points as at {dt.strftime(db.DtFormat)}."
 	context.bot.send_message(chat_id=query.from_user.id, text=msg)
 	return START
 
-def getPointsAndDatetime(uname):
-	try:
-		cells = Points.findall(uname, in_column=1)
-		qry = [f"C{i.row}:D{i.row}" for i in cells if i]
-		# [[['Fri 8/5/2020 8:00:00', '1']], [['Sun 17/5/2020 8:00:00', '2']]]
-		res = Points.batch_get(qry) 
-		res = [i[0] for i in res if i]
-		res = [(datetime.strptime(d,dtFormat), int(p)) for d,p in res]
-		pts = sum(p for _,p in res)
-		dt = max(d for d,_ in res)
-		return pts, dt
-	except Exception as e:
-		logging.warning(e)
-		return None, None
-
 def Unknown(update, context):
-	context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")
-
-### UNUSED FUNCTIONS (for reference) ###
-
-def postJSONGetPoints(user):
-	r = postJSON(json={
-		"query": f"SELECT D WHERE A='{user}'",
-		"url": os.getenv("DRIVE_URL"),
-	}, url="https://run.blockspring.com/api_v2/blocks/query-public-google-spreadsheet?&flatten=true")
-	# https://run.blockspring.com/api_v2/blocks/query-public-google-spreadsheet?&flatten=true&cache=true&expiry=3600
-	try:
-		r = r.json()["data"]
-		return sum(i["Points"] for i in r)
-	except Exception as e:
-		logging.error(e)
+	context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command. Type /start to begin.")
+	
