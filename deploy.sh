@@ -1,3 +1,4 @@
+read -p "Heroku app name: " APP_NAME
 heroku container:login
 heroku plugins:install heroku-config
 heroku config:push --app $APP_NAME
