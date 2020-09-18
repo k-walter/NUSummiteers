@@ -1,6 +1,6 @@
 import os
-import pytz
 import job
+# import qna
 import handler
 import logging
 from datetime import time, timedelta, timezone
@@ -15,6 +15,7 @@ class TelegramBot():
 		self.updater = Updater(token=os.getenv("BOT_TOKEN"), use_context=True)
 		self.dispatcher = self.updater.dispatcher
 		self.job_queue = self.updater.job_queue
+		# self.sbot = qna.SlackBot(self.dispatcher.bot)
 
 		# Filters
 		self.isTextMsg = Filters.text & (~Filters.command)
@@ -43,11 +44,6 @@ class TelegramBot():
 				],
 				handler.SUBMIT: [
 					MessageHandler(self.isUpload, handler.Submitted),
-					CallbackQueryHandler(handler.Start, pattern=f"^{handler.START}$"),
-					CallbackQueryHandler(handler.End, pattern=f"^{handler.END}$"),
-				],
-				handler.ASK: [
-					MessageHandler(self.isTextMsg, handler.Asked),
 					CallbackQueryHandler(handler.Start, pattern=f"^{handler.START}$"),
 					CallbackQueryHandler(handler.End, pattern=f"^{handler.END}$"),
 				],

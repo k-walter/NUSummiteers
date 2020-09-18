@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 tz = timezone(timedelta(hours=8))
 
 # States
-START, END, SUBMIT, SUBMITTED, ASK, ASKED, PROGRESS, LEADERBOARD = map(str,range(8))
+START, END, SUBMIT, SUBMITTED, ASK, PROGRESS, LEADERBOARD = map(str,range(7))
 
 # Helper variables and functions
 goBackMarkup = InlineKeyboardMarkup([
@@ -57,7 +57,6 @@ def Start(update, context):
 	"""
 	reply_markup = InlineKeyboardMarkup([
 		[InlineKeyboardButton("🎥 Submit Proof", callback_data=SUBMIT)],
-		[InlineKeyboardButton("🤔 Ask a Question", callback_data=ASK)],
 		[InlineKeyboardButton("📊 Check Progress", callback_data=PROGRESS)],
 		[InlineKeyboardButton("❌ End", callback_data=END)],
 	])
@@ -107,18 +106,10 @@ def postJSONToSlack(json):
 	postJSON(url=os.getenv("SLACK_TOKEN"), json=json)
 
 def Ask(update, context):
-	query = update.callback_query
-	query.answer()
-	query.edit_message_caption("Ask your question below...", reply_markup=goBackMarkup)
-	return ASK
-
-def Asked(update, context):
 	postJSONToSlack({
 		"type": "mrkdwn",
 		"text": f"Name: *{update.message.from_user.first_name}* `t.me/{update.message.from_user.username}`\n{update.message.text}",
 	})
-	context.bot.send_message(chat_id=update.effective_chat.id, text="We'll get back to you soon!")
-	return Start(update, context)
 
 @run_async
 @send_typing_action

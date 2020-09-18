@@ -1,8 +1,8 @@
 import os
 import db
 import logging
-from slack import RTMClient
-from slack.errors import SlackApiError
+from slackeventsapi import SlackEventAdapter
+# from slack.errors import SlackApiError
 from telegram.ext.dispatcher import run_async
 
 logging.basicConfig(level=logging.DEBUG,
@@ -28,21 +28,18 @@ logging.basicConfig(level=logging.DEBUG,
 # If convo
 	# CreateOrReply thread
 
-class SlackBot:
+class SlackBot():
 	def __init__(self, tbot):
 		self.tbot = tbot
-		self.sc = RTMClient(token=os.getenv("SLACK_TOKEN"))
+		SlackBot.sc.start(port=3000)
 
-		self.sc.start()
+	@sc.on("reaction_added")
+	def reaction_added(event_data):
+		emoji = event_data["event"]["reaction"]
+		logging.info(emoji)
 
 	def SendMessage(self, json):
 		try:
-			# rtm_client = payload['rtm_client']
-			# resp = rtm_client.chat_postMessage(
-			# 	channel=os.getenv("SLACK_CHANNEL"),
-			# 	text=text,
-			# 	thread_ts=thread_ts,
-			# )
 			r = requests.post(os.getenv("SLACK_CHANNEL"), json=json)
 			r.raise_for_status()
 			return r
