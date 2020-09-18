@@ -41,18 +41,42 @@ def GetPointsAndDate(uname):
 		logging.warning(e)
 		return None, None
 
+def GetSIDFromTID(tid):
+	try:
+		c = Names.find(tid, in_column=3)
+		return Names.get(f"D{c.row}"), True
+	except Exception as e:
+		return None, False
+
+def GetTIDFromSID(sid):
+	try:
+		c = Names.find(si, in_column=4)
+		return Names.get(f"C{c.row}"), True
+	except Exception as e:
+		logging.error(e)
+		return None, False
+
+def SaveSIDWithTID(tid, sid):
+	try:
+		c = Names.find(tid, in_column=3)
+		Names.updates(f"D{c.rows}", sid)
+	except Exception as e:
+		logging.error(e)
+
 def MakeUnique():
 	try:
 		# get all rows
-		db = handler.Names.batch_get(["A2:C"])[0]
+		db = Names.batch_get(["A2:D"])[0]
 
 		# get unique handlers
 		# 0 in rows ---> 2 in db
 		users = defaultdict(list)
+		ncol = 0
 		for i, row in enumerate(db):
 			if len(row) < 1:
 				continue
 			users[row[0].lower()].append(i)
+			ncol = max(ncol, len(row))
 
 		# combine same handlers
 		updates = list()
@@ -60,37 +84,39 @@ def MakeUnique():
 			if len(rows) == 1:
 				continue
 
-			# keep longest name, uid
+			# keep longest name, tid, sid
+			mval = [""] * (ncol - 1)
 			name, uid = "", ""
 			for i in rows:
 				row = db[i]
-				if len(row) >= 2 and len(row[1]) > len(name):
-					name = row[1]
-				if len(row) >= 3 and len(row[2]) > len(uid):
-					uid = row[2]
+				for j, val in enumerate(row[1:], 0):
+					if len(val) > len(mval[j]):
+						mval[j] = val
 
-			# delete and save for update
+			# update combined values
 			i = rows[0] + 2
 			updates.append({
-				'range': f"B{i}:C{i}",
-				'values': [[name, uid]],
+				'range': f"B{i}:D{i}",
+				'values': [mval],
 			})
+
+			# delete extra rows
 			for i in rows[1:]:
-				handler.Names.delete_rows(i+2)
+				Names.delete_rows(i+2)
 
 		# update unique handlers
-		handler.Names.batch_update(updates, value_input_option="USER_ENTERED")
+		Names.batch_update(updates, value_input_option="USER_ENTERED")
 
 	except Exception as e:
 		logging.error(e)
 
-def Broadcast(fn):
-	MakeUnique()
-	fn(69761990)
+def GetUnique():
+	try:
+		tid = Names.get("C2:C")
+		tid = [int(i[0]) for i in tid if i]
+		return tid
+	except Exception as e:
+		logging.error(e)
 
-	# TODO send to all
-	return
-	ids = handler.Names.get("C2:C")
-	ids = [int(i[0]) for i in ids if i]
-	for cid in ids:
-		fn(cid)
+if __name__ == "__main__":
+	MakeUnique()
