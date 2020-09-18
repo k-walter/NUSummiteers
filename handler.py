@@ -65,15 +65,16 @@ def Start(update, context):
 	# Send message with text and appended InlineKeyboard
 	if isNewConvo:
 		update.message.reply_photo(
-			photo="AgACAgUAAxkDAAIB1l9TCKTrMMWwU61ekflfLj90yAOuAAKKqjEbdimZVgK1Ii6AzP100QHta3QAAwEAAwIAA20AA6IGAwABGwQ", # fileID
-			caption="Hi there future Summiteer! Thank you for signing up for NUSummiteers. Don't forget that you will receive an extra chance in the lucky draw when you refer a friend to sign up for NUSummiteers! Stay tuned for updates here!",
+			# photo="AgACAgUAAxkDAAIB1l9TCKTrMMWwU61ekflfLj90yAOuAAKKqjEbdimZVgK1Ii6AzP100QHta3QAAwEAAwIAA20AA6IGAwABGwQ", # fileID
+			photo="AgACAgUAAxkBAAMMX1umgN2gFleA_S0tFOuqWsypMHgAAm2rMRvT8tlWeV44TIpQ__QP-WBsdAADAQADAgADbQADpaUBAAEbBA", # mir bot 
+			caption="Hi Summiteer! Remember to share your activity with us on Instagram @nus_mountaineering and #NUSummiteers! You will earn an extra chance in the lucky draw daily when you tag us! Stay tuned for updates here!",
 			reply_markup=reply_markup
 		)
 	else:
 		query = update.callback_query
 		query.answer()
 		query.edit_message_caption(
-			caption="Hi there future Summiteer! Thank you for signing up for NUSummiteers. Don't forget that you will receive an extra chance in the lucky draw when you refer a friend to sign up for NUSummiteers!",
+			caption="Hi Summiteer! 📣Share pictures and/or videos of their activities of yourself attempting NUSummiteers on our Instagram Story @nus_mountaineering, and use the hashtag #NUSummiteers to earn an extra chance for the lucky draw per day! Stay tuned for updates here! Also, check out our site: https://nus-mir.com/nusummiteers/",
 			reply_markup=reply_markup
 		)
 
@@ -87,7 +88,6 @@ def End(update, context):
 	return ConversationHandler.END
 
 def Submit(update, context):
-	logger.info("I'm in Submit()")
 	query = update.callback_query
 	query.answer()
 	msg = "Upload your activity proof!\n\n🖼 *Photos/Screenshots* - must include elevation gained, timestamp and identification/user ID.\n🎬 *Videos* - must overlay timestamp or include a shot of a phone/watch depicting timestamp at the start of the video AND record complete climb(s) from bottom to top."
@@ -96,7 +96,6 @@ def Submit(update, context):
 
 @run_async
 def Submitted(update, context):
-	logger.info("I'm in Submitted()")
 	context.bot.send_message(chat_id=update.effective_chat.id, text="Submission Received!")
 	msg = f"Name: *{update.message.from_user.first_name}* `t.me/{update.message.from_user.username}`\nTime: {datetime.now(tz).strftime(db.DtFormat)}"
 	context.bot.send_message(chat_id=os.getenv("CHANNEL_ID"), text=msg, parse_mode="Markdown")
@@ -130,10 +129,18 @@ def Progress(update, context):
 	if pts is None:
 		msg = "Your points have not been updated yet"
 	else:
-		msg = f"Your points from elevation gained is {pts} points as at {dt.strftime(db.DtFormat)}."
+		msg = f"Your points from elevation gained is {pts} points based on your submission as at {dt.strftime(db.DtFormat)}."
 	context.bot.send_message(chat_id=query.from_user.id, text=msg)
 	return START
 
 def Unknown(update, context):
-	context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command. Type /start to begin.")
+	context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command. Please enter /start to begin.")
+
+def Reject(update, context):
+	context.bot.send_message(
+		chat_id=update.effective_chat.id,
+		text="❗ Please upload your activity proof in `🎥 Submit Proof`.\n🤔 For questions, please reply with text only or send us links to your specific media.",
+		parse_mode="Markdown",
+	)
+	return Start(update, context)
 	

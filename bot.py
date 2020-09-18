@@ -3,14 +3,14 @@ import pytz
 import job
 import handler
 import logging
-from datetime import time
+from datetime import time, timedelta, timezone
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler, ConversationHandler, CallbackQueryHandler
 
 logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-tz = pytz.timezone(os.getenv("TZ"))
+TZ = timezone(timedelta(hours=8))
 
-class Bot():
+class TelegramBot():
 	def __init__(self):
 		self.updater = Updater(token=os.getenv("BOT_TOKEN"), use_context=True)
 		self.dispatcher = self.updater.dispatcher
@@ -22,11 +22,10 @@ class Bot():
 
 		# Attach handlers
 		self.dispatcher.add_handler(self.ConversationHandler())
-		# self.dispatcher.add_handler(MessageHandler(self.isTextMsg, ))
+		self.dispatcher.add_handler(MessageHandler(Filters.all, handler.Unknown))
 
 		# Add schedules
-		# self.job_queue.run_repeating(job.Fact, 10)
-		self.job_queue.run_daily(job.Fact,         time(12,0,0,tzinfo=tz))        # 12pm --> 8pm
+		job.Schedule(self.job_queue)
 		self.job_queue.run_daily(job.Fact,         time(19,0,0,tzinfo=tz))        # 7pm --> 3am
 		self.job_queue.run_daily(job.Progress,     time(5,0,0,tzinfo=tz))
 		self.job_queue.run_daily(job.Leaderboard,  time(5,0,30,tzinfo=tz))
@@ -60,11 +59,16 @@ class Bot():
 					CallbackQueryHandler(handler.Start, pattern=f"^{handler.START}$"),
 				],
 			},
-			fallbacks=[CommandHandler('start', handler.Start)]
+			fallbacks=[
+				MessageHandler(self.isTextMsg, handler.Ask),	# stays in state
+				MessageHandler(self.isUpload, handler.Reject),	# returns to start
+				CommandHandler('start', handler.Start),
+			],
+			allow_reentry=True,
 		)
 
 def main():
-	bot = Bot()
+	bot = TelegramBot()
 
 if __name__ == "__main__":
 	main()
