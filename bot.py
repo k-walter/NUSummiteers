@@ -26,10 +26,6 @@ class TelegramBot():
 
 		# Add schedules
 		job.Schedule(self.job_queue)
-		self.job_queue.run_daily(job.Fact,         time(19,0,0,tzinfo=tz))        # 7pm --> 3am
-		self.job_queue.run_daily(job.Progress,     time(5,0,0,tzinfo=tz))
-		self.job_queue.run_daily(job.Leaderboard,  time(5,0,30,tzinfo=tz))
-		self.job_queue.run_daily(job.FAQ,          time(22,0,0,tzinfo=tz))
 
 		# Listen and Serve
 		self.updater.start_polling()    # non-blocking
