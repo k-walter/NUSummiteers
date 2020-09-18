@@ -4,11 +4,11 @@ services:
         build: .
         container_name: bot
         restart: always
-        command: python /usr/src/app/bot.py
+        command: tail -f /dev/null
+        # command: python /usr/src/app/bot.py
         volumes:
             - .:/usr/src/app
         env_file:
             - .env
         ports:
             - 41033:41033
-

@@ -65,8 +65,8 @@ def Start(update, context):
 	# Send message with text and appended InlineKeyboard
 	if isNewConvo:
 		update.message.reply_photo(
-			# photo="AgACAgUAAxkDAAIB1l9TCKTrMMWwU61ekflfLj90yAOuAAKKqjEbdimZVgK1Ii6AzP100QHta3QAAwEAAwIAA20AA6IGAwABGwQ", # fileID
-			photo="AgACAgUAAxkBAAMMX1umgN2gFleA_S0tFOuqWsypMHgAAm2rMRvT8tlWeV44TIpQ__QP-WBsdAADAQADAgADbQADpaUBAAEbBA", # mir bot 
+			photo="AgACAgUAAxkDAAIB1l9TCKTrMMWwU61ekflfLj90yAOuAAKKqjEbdimZVgK1Ii6AzP100QHta3QAAwEAAwIAA20AA6IGAwABGwQ", # fileID
+			# photo="AgACAgUAAxkBAAMMX1umgN2gFleA_S0tFOuqWsypMHgAAm2rMRvT8tlWeV44TIpQ__QP-WBsdAADAQADAgADbQADpaUBAAEbBA", # mir bot 
 			caption="Hi Summiteer! Remember to share your activity with us on Instagram @nus_mountaineering and #NUSummiteers! You will earn an extra chance in the lucky draw daily when you tag us! Stay tuned for updates here!",
 			reply_markup=reply_markup
 		)
@@ -104,7 +104,7 @@ def Submitted(update, context):
 
 @run_async
 def postJSONToSlack(json):
-	postJSON(url=os.getenv("SLACK_TOKEN"), json=json)
+	postJSON(url=os.getenv("SLACK_CHANNEL"), json=json)
 
 def Ask(update, context):
 	query = update.callback_query

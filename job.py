@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 tz = timezone(timedelta(hours=8))
-test = True
+test = False
 
 def Broadcast(fn):
 	logging.info(f"Broadcasting {fn}")
@@ -35,10 +35,10 @@ def Schedule(job_queue):
 		jobs = yaml.load(f, Loader=yaml.FullLoader)
 	for job in jobs:
 		try:
+			text = job.get("text", "")
 			dt = datetime(*job["datetime"], tzinfo=tz)
 			if test:
 				dt = 5
-			text = job.get("text", "")
 
 			# text message
 			if "media" not in job:

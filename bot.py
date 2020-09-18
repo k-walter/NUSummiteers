@@ -1,5 +1,4 @@
 import os
-import pytz
 import job
 import handler
 import logging
