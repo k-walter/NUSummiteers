@@ -14,6 +14,7 @@ sh = gc.open_by_url(os.getenv("DRIVE_URL"))
 DtFormat = "%a %d/%m/%Y %H:%M:%S"
 Points = sh.worksheet("Points")
 Names = sh.worksheet("Names")
+Poll = sh.worksheet("Poll")
 
 @run_async
 def AddToNames(uname, uid):
@@ -32,7 +33,7 @@ def GetPointsAndDate(uname):
 		qry = [f"C{i.row}:D{i.row}" for i in cells if i]
 		# [[['Fri 8/5/2020 8:00:00', '1']], [['Sun 17/5/2020 8:00:00', '2']]]
 		res = Points.batch_get(qry) 
-		res = [i[0] for i in res if i]
+		res = [i[0] for i in res if i and i[0][1]]
 		res = [(datetime.strptime(d,DtFormat), int(p)) for d,p in res]
 		pts = sum(p for _,p in res)
 		dt = max(d for d,_ in res)
@@ -59,14 +60,29 @@ def GetTIDFromSID(sid):
 def SaveSIDWithTID(tid, sid):
 	try:
 		c = Names.find(tid, in_column=3)
-		Names.updates(f"D{c.rows}", sid)
+		Names.update(f"D{c.row}", sid)
+	except Exception as e:
+		logging.error(e)
+
+@run_async
+def SavePoll(uname, pid):
+	try:
+		Poll.append_row([uname, None, pid])
+	except Exception as e:
+		logging.error(e)
+
+@run_async
+def UpdatePoll(pid, option):
+	try:
+		c = Poll.find(pid, in_column=3)
+		Poll.update(f"D{c.row}", option)
 	except Exception as e:
 		logging.error(e)
 
 def MakeUnique():
 	try:
 		# get all rows
-		db = Names.batch_get(["A2:D"])[0]
+		db = Names.batch_get(["A2:E"])[0]
 
 		# get unique handlers
 		# 0 in rows ---> 2 in db
@@ -96,7 +112,7 @@ def MakeUnique():
 			# update combined values
 			i = rows[0] + 2
 			updates.append({
-				'range': f"B{i}:D{i}",
+				'range': f"B{i}:E{i}",
 				'values': [mval],
 			})
 

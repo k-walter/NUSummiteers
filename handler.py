@@ -67,7 +67,7 @@ def Start(update, context):
 		update.message.reply_photo(
 			photo="AgACAgUAAxkDAAIB1l9TCKTrMMWwU61ekflfLj90yAOuAAKKqjEbdimZVgK1Ii6AzP100QHta3QAAwEAAwIAA20AA6IGAwABGwQ", # fileID
 			# photo="AgACAgUAAxkBAAMMX1umgN2gFleA_S0tFOuqWsypMHgAAm2rMRvT8tlWeV44TIpQ__QP-WBsdAADAQADAgADbQADpaUBAAEbBA", # mir bot 
-			caption="Hi Summiteer! Remember to share your activity with us on Instagram @nus_mountaineering and #NUSummiteers! You will earn an extra chance in the lucky draw daily when you tag us! Stay tuned for updates here!",
+			caption="Hi Summiteer! Remember to share your activity with us on Instagram @nus_mountaineering and #NUSummiteers! You will earn an extra chance in the lucky draw daily when you tag us! Stay tuned for updates here! Also, check out our site: https://nus-mir.com/nusummiteers/",
 			reply_markup=reply_markup
 		)
 	else:
@@ -80,6 +80,19 @@ def Start(update, context):
 
 	# Tell ConversationHandler our current state
 	return START
+
+@run_async
+def UpdatePoll(update, context):
+	poll = update.poll
+	pid = poll.id
+	for opt in poll.options:
+		cnt = opt.voter_count
+		if cnt == 0:
+			continue
+		# update selected option
+		text = opt.text	
+		db.UpdatePoll(pid, text)
+		return
 
 def End(update, context):
 	query = update.callback_query

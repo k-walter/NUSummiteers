@@ -96,3 +96,10 @@
   text: "Take note of the exact locations and do send us your doubts through “Ask a Question” if you have any!"
   media:
     - photo: AgACAgUAAxkBAAIHo19lBL2NZDfZm3hGTP9sVhCr7Z3_AAIYrTEb4t0oV_1HZJ5hErMLotYAAWx0AAMBAAMCAANtAAP9FwMAARsE
+
+- datetime: [2020, 9, 21, 16]
+  text: "Thank you for coming down to collect your goodie bags today! It was nice seeing many of you today!\n\nFor those who are unable to make it today, fret not! Answer the poll below to collect your goodie bag at the *UTown Climbing Wall* of Stephen Riady Centre NUS."
+  options:
+    - "29 Sep, Tuesday 7 PM to 10 PM"
+    - "30 Sep, Wednesday 7 PM to 10 PM"
+    - "I am unable to make it on both days. We will reach out to you personally."

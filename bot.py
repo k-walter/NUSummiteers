@@ -3,7 +3,7 @@ import job
 import handler
 import logging
 from datetime import time, timedelta, timezone
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler, ConversationHandler, CallbackQueryHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler, ConversationHandler, CallbackQueryHandler, PollHandler
 
 logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -21,6 +21,7 @@ class TelegramBot():
 
 		# Attach handlers
 		self.dispatcher.add_handler(self.ConversationHandler())
+		self.dispatcher.add_handler(PollHandler(handler.UpdatePoll))
 		self.dispatcher.add_handler(MessageHandler(Filters.all, handler.Unknown))
 
 		# Add schedules
@@ -60,7 +61,7 @@ class TelegramBot():
 			fallbacks=[
 				MessageHandler(self.isTextMsg, handler.Ask),	# stays in state
 				MessageHandler(self.isUpload, handler.Reject),	# returns to start
-				CommandHandler('start', handler.Start),
+				PollHandler(handler.UpdatePoll),
 				CallbackQueryHandler(handler.Start),
 			],
 			allow_reentry=True,
