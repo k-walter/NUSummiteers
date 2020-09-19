@@ -65,7 +65,7 @@ class TelegramBot():
 				CallbackQueryHandler(handler.Start),
 			],
 			allow_reentry=True,
-			conversation_timeout=300, # 3 minutes
+			conversation_timeout=300, # 5 minutes
 		)
 
 def main():
