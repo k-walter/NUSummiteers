@@ -53,13 +53,18 @@ class TelegramBot():
 				handler.PROGRESS: [
 					CallbackQueryHandler(handler.Start, pattern=f"^{handler.START}$"),
 				],
+				ConversationHandler.TIMEOUT: [
+					CallbackQueryHandler(handler.End),
+				],
 			},
 			fallbacks=[
 				MessageHandler(self.isTextMsg, handler.Ask),	# stays in state
 				MessageHandler(self.isUpload, handler.Reject),	# returns to start
 				CommandHandler('start', handler.Start),
+				CallbackQueryHandler(handler.Start),
 			],
 			allow_reentry=True,
+			conversation_timeout=300, # 3 minutes
 		)
 
 def main():
