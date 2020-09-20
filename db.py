@@ -1,8 +1,9 @@
 import os
 import gspread
 import logging
+from functools import wraps
 from datetime import datetime
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from telegram.ext.dispatcher import run_async
 
 logging.basicConfig(level=logging.DEBUG,
@@ -79,6 +80,36 @@ def UpdatePoll(pid, option):
 	except Exception as e:
 		logging.error(e)
 
+cache = OrderedDict()
+def lru_cache(func, maxSize=128):
+	@wraps(func)
+	def command_func(*args):
+		# cache hit
+		if args in cache:
+			cache.move_to_end(args)
+			return cache[args]
+		# call function
+		result = func(*args)
+		if not result: # False
+			return result
+		# save True response
+		cache[args] = result
+		# lru
+		if len(cache) > maxSize:
+			cache.popitem(last=False)
+		return result
+	return command_func
+
+@lru_cache
+def CanSubmit(uname):
+	try:
+		MakeUnique()
+		c = Names.find(uname, in_column=1)
+		out = Names.get(f"E{c.row}")[0][0]
+		return out == "YES"
+	except Exception as e:	
+		logging.error(e)
+
 def MakeUnique():
 	try:
 		# get all rows
@@ -128,6 +159,7 @@ def MakeUnique():
 
 def GetUnique():
 	try:
+		MakeUnique()
 		tid = Names.get("C2:C")
 		tid = [int(i[0]) for i in tid if i]
 		return tid

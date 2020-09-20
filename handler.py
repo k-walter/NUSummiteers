@@ -103,12 +103,16 @@ def End(update, context):
 def Submit(update, context):
 	query = update.callback_query
 	query.answer()
+	if RejectSubmission(update, context):
+		return START
 	msg = "Upload your activity proof!\n\n🖼 *Photos/Screenshots* - must include elevation gained, timestamp and identification/user ID.\n🎬 *Videos* - must overlay timestamp or include a shot of a phone/watch depicting timestamp at the start of the video AND record complete climb(s) from bottom to top."
 	query.edit_message_caption(msg, parse_mode='Markdown', reply_markup=goBackMarkup)
 	return SUBMIT
 
 @run_async
 def Submitted(update, context):
+	if RejectSubmission(update, context):
+		return START
 	# forward to channel
 	msg = context.bot.forward_message(chat_id=os.getenv("CHANNEL_ID"), from_chat_id=update.effective_chat.id, message_id=update.message.message_id)
 	text = f"Name: *{update.message.from_user.first_name}* `t.me/{update.message.from_user.username}`\nTime: {datetime.now(tz).strftime(db.DtFormat)}"
@@ -125,6 +129,26 @@ def Submitted(update, context):
 		reply_to_message_id=update.message.message_id,
 	)
 	return SUBMIT
+
+def RejectSubmission(update, context):
+	# get username, original message_id
+	reply = None
+	if update.message:
+		uname = update.message.from_user.username
+		reply = update.message.message_id,
+	else:
+		query = update.callback_query
+		uname = query.from_user.username
+	# send warning
+	if db.CanSubmit(uname):
+		return False
+	context.bot.send_message(
+		chat_id=update.effective_chat.id,
+		text="Sorry, we are not accepting submissions from unregistered persons. If this is an error, please `Ask A Question` and we will get back to you soon.",
+		parse_mode="Markdown",
+		reply_to_message_id=reply,
+	)
+	return True
 
 @run_async
 def postJSONToSlack(json):

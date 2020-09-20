@@ -14,7 +14,6 @@ test = False
 
 def Broadcast(fn):
 	logging.info(f"Broadcasting {fn}")
-	db.MakeUnique()
 	tids = db.GetUnique()
 	if not tids:
 		return
