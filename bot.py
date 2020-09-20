@@ -3,7 +3,7 @@ import job
 import handler
 import logging
 from datetime import time, timedelta, timezone
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler, ConversationHandler, CallbackQueryHandler, PollHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler, ConversationHandler, CallbackQueryHandler, PollHandler, BaseFilter
 
 logging.basicConfig(level=logging.DEBUG,
 					format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')

@@ -40,7 +40,7 @@ def Schedule(job_queue):
 				continue
 
 			if test:
-				dt = 5
+				dt = 3
 
 			# poll message
 			if "options" in job:
