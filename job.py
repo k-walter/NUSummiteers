@@ -36,7 +36,7 @@ def Schedule(job_queue):
 			text = job.get("text", None)
 			dt = datetime(*job["datetime"], tzinfo=tz)
 			# skip overdue messages
-			if dt < datetime.now(tz):
+			if dt < datetime.now(tz) and not test:
 				continue
 
 			if test:

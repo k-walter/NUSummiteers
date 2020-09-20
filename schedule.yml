@@ -1,4 +1,9 @@
-##### LEADERBOARD ######
+- datetime: [2020, 9, 21, 8]
+  text: "Goodie Bag collection is today! Please take note of where the exact locations are! If you would like a proxy to pick up for you on your behalf today, please let us know ASAP through \"Ask a question\" on this bot.\n\nFor those who are unable to make it on the 21st and coming in Week 7, we will be reaching out to you soon! Do keep a lookout for updates on the bot! "
+  media:
+    - photo: AgACAgUAAxkBAAIHo19lBL2NZDfZm3hGTP9sVhCr7Z3_AAIYrTEb4t0oV_1HZJ5hErMLotYAAWx0AAMBAAMCAANtAAP9FwMAARsE
+
+##### LEADERBOARD #####
 
 - datetime: [2020, 9, 20, 5]
   media:
@@ -92,8 +97,11 @@
   media:
     - photo: AgACAgUAAxkBAAIHo19lBL2NZDfZm3hGTP9sVhCr7Z3_AAIYrTEb4t0oV_1HZJ5hErMLotYAAWx0AAMBAAMCAANtAAP9FwMAARsE
 
-- datetime: [2020, 9, 21, 9]
-  text: "Take note of the exact locations and do send us your doubts through “Ask a Question” if you have any!"
+- datetime: [2020, 9, 20, 23]
+  text: "Registration closes at 2345 tonight! We are really thrilled to receive so many sign ups and support from you guys! Before it’s too late, refer a friend and you will earn an extra chance in the lucky draw! (Sign-up link: bit.ly/NUSummiteers)\n\nNot only will you get an exclusive event T-shirt, a book Xixabangma written by our fond pioneer Dr Robert Goh and his stories of his attempt of this eight thousander peak without supplementary oxygen, you will also learn so much more about NUS Mountaineering (Make It Real) through our NUSummiteers bot https://t.me/nusummiteers_bot. All of this going at $20 for tremendous knowledge about MIR!!\n\nBest of all, there are many prizes to be won! There is an opportunity for all with categories like hiking, stair-climbing, running, treadmill running, climbing to clock elevation!"
+
+- datetime: [2020, 9, 21, 8]
+  text: "Goodie Bag collection is today! Please take note of where the exact locations are! If you would like a proxy to pick up for you on your behalf today, please let us know ASAP through \"Ask a question\" on this bot.\n\nFor those who are unable to make it on the 21st and coming in Week 7, we will be reaching out to you soon! Do keep a lookout for updates on the bot! "
   media:
     - photo: AgACAgUAAxkBAAIHo19lBL2NZDfZm3hGTP9sVhCr7Z3_AAIYrTEb4t0oV_1HZJ5hErMLotYAAWx0AAMBAAMCAANtAAP9FwMAARsE
 
