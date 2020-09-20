@@ -73,7 +73,7 @@ class TelegramBot():
 
 class FilterAlbum(BaseFilter):
 	def filter(self, message):
-		return (message.photo or message.video) and (not message.media_group_id)
+		return (message.photo or message.video) and (message.media_group_id is not None)
 
 def main():
 	bot = TelegramBot()
