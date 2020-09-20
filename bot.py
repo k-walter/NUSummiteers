@@ -11,17 +11,22 @@ TZ = timezone(timedelta(hours=8))
 
 class TelegramBot():
 	def __init__(self):
-		self.updater = Updater(token=os.getenv("BOT_TOKEN"), use_context=True)
+		self.updater = Updater(
+			token=os.getenv("BOT_TOKEN"),
+			use_context=True,
+			# user_sig_handler=handler.End,
+		)
 		self.dispatcher = self.updater.dispatcher
 		self.job_queue = self.updater.job_queue
 
 		# Filters
 		self.isTextMsg = Filters.text & (~Filters.command)
-		self.isUpload = Filters.video | Filters.photo | Filters.document | Filters.animation
+		self.isUpload = FilterAlbum() | Filters.video | Filters.photo | Filters.document | Filters.animation
 
 		# Attach handlers
 		self.dispatcher.add_handler(self.ConversationHandler())
 		self.dispatcher.add_handler(PollHandler(handler.UpdatePoll))
+		self.dispatcher.add_handler(MessageHandler(self.isUpload, handler.Submitted))
 		self.dispatcher.add_handler(MessageHandler(Filters.all, handler.Unknown))
 
 		# Add schedules
@@ -59,14 +64,16 @@ class TelegramBot():
 				],
 			},
 			fallbacks=[
-				MessageHandler(self.isTextMsg, handler.Ask),	# stays in state
-				MessageHandler(self.isUpload, handler.Reject),	# returns to start
 				PollHandler(handler.UpdatePoll),
-				CallbackQueryHandler(handler.Start),
+				MessageHandler(self.isUpload, handler.Submitted),
+				CallbackQueryHandler(handler.Unknown),
 			],
-			allow_reentry=True,
-			conversation_timeout=300, # 5 minutes
+			allow_reentry=True
 		)
+
+class FilterAlbum(BaseFilter):
+	def filter(self, message):
+		return (message.photo or message.video) and (not message.media_group_id)
 
 def main():
 	bot = TelegramBot()

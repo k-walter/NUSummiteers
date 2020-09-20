@@ -109,11 +109,22 @@ def Submit(update, context):
 
 @run_async
 def Submitted(update, context):
-	context.bot.send_message(chat_id=update.effective_chat.id, text="Submission Received!")
-	msg = f"Name: *{update.message.from_user.first_name}* `t.me/{update.message.from_user.username}`\nTime: {datetime.now(tz).strftime(db.DtFormat)}"
-	context.bot.send_message(chat_id=os.getenv("CHANNEL_ID"), text=msg, parse_mode="Markdown")
-	context.bot.forward_message(chat_id=os.getenv("CHANNEL_ID"), from_chat_id=update.effective_chat.id, message_id=update.message.message_id)
-	return Start(update, context)
+	# forward to channel
+	msg = context.bot.forward_message(chat_id=os.getenv("CHANNEL_ID"), from_chat_id=update.effective_chat.id, message_id=update.message.message_id)
+	text = f"Name: *{update.message.from_user.first_name}* `t.me/{update.message.from_user.username}`\nTime: {datetime.now(tz).strftime(db.DtFormat)}"
+	context.bot.send_message(
+		chat_id=os.getenv("CHANNEL_ID"),
+		text=text,
+		parse_mode="Markdown",
+		reply_to_message_id=msg.message_id,
+	)
+	# respond to user
+	context.bot.send_message(
+		chat_id=update.effective_chat.id,
+		text="Submission Received!",
+		reply_to_message_id=update.message.message_id,
+	)
+	return SUBMIT
 
 @run_async
 def postJSONToSlack(json):
