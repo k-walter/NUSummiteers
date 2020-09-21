@@ -100,16 +100,17 @@ def End(update, context):
 	query.edit_message_caption("🧗 Climb on!")
 	return ConversationHandler.END
 
+@send_typing_action
 def Submit(update, context):
 	query = update.callback_query
 	query.answer()
 	if RejectSubmission(update, context):
 		return START
-	msg = "Upload your activity proof!\n\n🖼 *Photos/Screenshots* - must include elevation gained, timestamp and identification/user ID.\n🎬 *Videos* - must overlay timestamp or include a shot of a phone/watch depicting timestamp at the start of the video AND record complete climb(s) from bottom to top."
+	msg = "Upload your activity proof!\n\n🖼 *Photos/Screenshots* - must include elevation gained, timestamp and identification/user ID.\n🎬 *Videos* - must overlay timestamp or include a shot of a phone/watch depicting timestamp at the start of the video AND record complete climb(s) from bottom to top.\n📁 You can now upload many submissions as an album!\n\n❌ *DO NOT* submit duplicates. Repeated occurrences of duplicate submissions will lead to deduction of points.\n✅ We encourage you to caption your submissions with *date, time*, eg `20/9 08:40`. This can help you double check your submissions to avoid duplicates!"
 	query.edit_message_caption(msg, parse_mode='Markdown', reply_markup=goBackMarkup)
 	return SUBMIT
 
-@run_async
+@send_typing_action
 def Submitted(update, context):
 	if RejectSubmission(update, context):
 		return START
@@ -182,7 +183,7 @@ def Progress(update, context):
 	return START
 
 def Unknown(update, context):
-	context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command. Please enter /start to begin.")
+	context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command. Type /start to begin.")
 
 def Reject(update, context):
 	context.bot.send_message(

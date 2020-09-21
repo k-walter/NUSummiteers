@@ -21,12 +21,11 @@ class TelegramBot():
 
 		# Filters
 		self.isTextMsg = Filters.text & (~Filters.command)
-		self.isUpload = FilterAlbum() | Filters.video | Filters.photo | Filters.document | Filters.animation
+		self.isUpload = Filters.video | Filters.photo | Filters.document | Filters.animation
 
 		# Attach handlers
 		self.dispatcher.add_handler(self.ConversationHandler())
 		self.dispatcher.add_handler(PollHandler(handler.UpdatePoll))
-		self.dispatcher.add_handler(MessageHandler(self.isUpload, handler.Submitted))
 		self.dispatcher.add_handler(MessageHandler(Filters.all, handler.Unknown))
 
 		# Add schedules
@@ -65,7 +64,6 @@ class TelegramBot():
 			},
 			fallbacks=[
 				PollHandler(handler.UpdatePoll),
-				MessageHandler(self.isUpload, handler.Submitted),
 				CallbackQueryHandler(handler.Unknown),
 			],
 			allow_reentry=True
