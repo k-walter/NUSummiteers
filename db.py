@@ -17,6 +17,15 @@ Points = sh.worksheet("Points")
 Names = sh.worksheet("Names")
 Poll = sh.worksheet("Poll")
 
+def log_error(func):
+	@wraps(func)
+	def command_func(*args, **kwargs):
+		try:
+			return func(*args, **kwargs)
+		except Exception as e:
+			logging.error(e)
+	return command_func
+
 @run_async
 def AddToNames(uname, uid):
 	# find and save ID
@@ -58,27 +67,21 @@ def GetTIDFromSID(sid):
 		logging.error(e)
 		return None, False
 
+@log_error
 def SaveSIDWithTID(tid, sid):
-	try:
-		c = Names.find(tid, in_column=3)
-		Names.update(f"D{c.row}", sid)
-	except Exception as e:
-		logging.error(e)
+	c = Names.find(tid, in_column=3)
+	Names.update(f"D{c.row}", sid)
 
 @run_async
+@log_error
 def SavePoll(uname, pid):
-	try:
-		Poll.append_row([uname, None, pid])
-	except Exception as e:
-		logging.error(e)
+	Poll.append_row([uname, None, pid])
 
 @run_async
+@log_error
 def UpdatePoll(pid, option):
-	try:
-		c = Poll.find(pid, in_column=3)
-		Poll.update(f"D{c.row}", option)
-	except Exception as e:
-		logging.error(e)
+	c = Poll.find(pid, in_column=3)
+	Poll.update(f"D{c.row}", option)
 
 cache = OrderedDict()
 def lru_cache(func, maxSize=128):
@@ -100,71 +103,68 @@ def lru_cache(func, maxSize=128):
 		return result
 	return command_func
 
+@log_error
 @lru_cache
 def CanSubmit(uname):
-	try:
-		MakeUnique()
-		c = Names.find(uname, in_column=1)
-		out = Names.get(f"E{c.row}")[0][0]
-		return out == "YES"
-	except Exception as e:	
-		logging.error(e)
+	MakeUnique()
+	c = Names.find(uname, in_column=1)
+	out = Names.get(f"E{c.row}")[0][0]
+	return out == "YES"
 
+@log_error
+def AddSubmission(uname, submittedAt):
+	Points.append_row([uname, None, submittedAt])
+
+@log_error
 def MakeUnique():
-	try:
-		# get all rows
-		db = Names.batch_get(["A2:E"])[0]
+	# get all rows
+	db = Names.batch_get(["A2:E"])[0]
 
-		# get unique handlers
-		# 0 in rows ---> 2 in db
-		users = defaultdict(list)
-		ncol = 0
-		for i, row in enumerate(db):
-			if len(row) < 1:
-				continue
-			users[row[0].lower()].append(i)
-			ncol = max(ncol, len(row))
+	# get unique handlers
+	# 0 in rows ---> 2 in db
+	users = defaultdict(list)
+	ncol = 0
+	for i, row in enumerate(db):
+		if len(row) < 1:
+			continue
+		users[row[0].lower()].append(i)
+		ncol = max(ncol, len(row))
 
-		# combine same handlers
-		updates = list()
-		for uname, rows in users.items():
-			if len(rows) == 1:
-				continue
+	# combine same handlers
+	updates = list()
+	for uname, rows in users.items():
+		if len(rows) == 1:
+			continue
 
-			# keep longest name, tid, sid
-			mval = [""] * (ncol - 1)
-			name, uid = "", ""
-			for i in rows:
-				row = db[i]
-				for j, val in enumerate(row[1:], 0):
-					if len(val) > len(mval[j]):
-						mval[j] = val
+		# keep longest name, tid, sid
+		mval = [""] * (ncol - 1)
+		name, uid = "", ""
+		for i in rows:
+			row = db[i]
+			for j, val in enumerate(row[1:], 0):
+				if len(val) > len(mval[j]):
+					mval[j] = val
 
-			# update combined values
-			i = rows[0] + 2
-			updates.append({
-				'range': f"B{i}:E{i}",
-				'values': [mval],
-			})
+		# update combined values
+		i = rows[0] + 2
+		updates.append({
+			'range': f"B{i}:E{i}",
+			'values': [mval],
+		})
 
-			# delete extra rows
-			for i in rows[1:]:
-				Names.delete_rows(i+2)
+		# delete extra rows
+		for i in rows[1:]:
+			Names.delete_rows(i+2)
 
-		# update unique handlers
-		Names.batch_update(updates, value_input_option="USER_ENTERED")
+	# update unique handlers
+	Names.batch_update(updates, value_input_option="USER_ENTERED")
 
-	except Exception as e:
-		logging.error(e)
-
+@log_error
 def GetUnique():
-	try:
-		MakeUnique()
-		tid = Names.get("C2:C")
-		tid = [int(i[0]) for i in tid if i]
-		return tid
-	except Exception as e:
-		logging.error(e)
+	MakeUnique()
+	tid = Names.get("C2:C")
+	tid = [int(i[0]) for i in tid if i]
+	return tid
 
 if __name__ == "__main__":
 	MakeUnique()

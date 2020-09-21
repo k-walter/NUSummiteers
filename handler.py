@@ -31,13 +31,11 @@ def send_typing_action(func):
 		return func(update, context,  *args, **kwargs)
 	return command_func
 
+@db.log_error
 def postJSON(url, json):
-	try:
-		r = requests.post(url, json=json)
-		r.raise_for_status()
-		return r
-	except Exception as e:
-		logging.error(e)
+	r = requests.post(url, json=json)
+	r.raise_for_status()
+	return r
 
 # Main handlers
 def Start(update, context):
