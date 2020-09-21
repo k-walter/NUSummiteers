@@ -112,14 +112,23 @@ def Submit(update, context):
 def Submitted(update, context):
 	if RejectSubmission(update, context):
 		return START
-	# forward to channel
+	# forward submission to channel
 	msg = context.bot.forward_message(chat_id=os.getenv("CHANNEL_ID"), from_chat_id=update.effective_chat.id, message_id=update.message.message_id)
-	text = f"Name: *{update.message.from_user.first_name}* `t.me/{update.message.from_user.username}`\nTime: {datetime.now(tz).strftime(db.DtFormat)}"
+	dt = msg.date \
+			.astimezone(tz=tz) \
+			.strftime(db.DtFormat)
+	# send timestamp to channel
+	text = f"Name: *{update.message.from_user.first_name}* `t.me/{update.message.from_user.username}`\nTime: {dt}"
 	context.bot.send_message(
 		chat_id=os.getenv("CHANNEL_ID"),
 		text=text,
 		parse_mode="Markdown",
 		reply_to_message_id=msg.message_id,
+	)
+	# update db
+	db.AddSubmission(
+		uname=update.message.from_user.username,
+		submittedAt=dt,
 	)
 	# respond to user
 	context.bot.send_message(

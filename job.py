@@ -61,6 +61,9 @@ def Schedule(job_queue):
 		except Exception as e:
 			logging.error(e)
 
+		if test:
+			return
+
 def SendMessage(text):
 	def callback(context):
 		fn = lambda tid: context.bot.send_message(
