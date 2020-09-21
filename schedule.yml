@@ -8,6 +8,10 @@
   media:
     - photo: AgACAgUAAxkBAAIQ4l9oGqs--Ew5pxsZKSl0Ao-ID7KlAAIXqzEb-jRAV6q3sGMuF9-vV7lma3QAAwEAAwIAA20AAxElBwABGwQ
 
+- datetime: [2020, 9, 21, 23]
+  media:
+    - photo: AgACAgUAAxkBAAIWCV9otAxO8YZjAAGtRgYWgayXFXAHqQACuaoxG_o0SFd6bt-J8Cik1ALGy2x0AAMBAAMCAANtAAOv3wACGwQ
+
 ##### Fun Facts #####
 
 - datetime: [2020, 9, 19, 12]
@@ -110,3 +114,6 @@
     - "29 Sep, Tuesday 7 PM to 10 PM"
     - "30 Sep, Wednesday 7 PM to 10 PM"
     - "I am unable to make it on both days. We will reach out to you personally."
+
+- datetime: [2020, 9, 21, 17]
+  text: "📢 Announcement 📢\n\n❌ Please review and check your submissions. *Do NOT submit duplicates*. Repeated occurrences of duplicate submissions will lead to deduction of points."
