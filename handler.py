@@ -77,7 +77,7 @@ def Start(update, context):
     # Send message with text and appended InlineKeyboard
     if isNewConvo:
         update.message.reply_photo(
-			photo="AgACAgUAAxkDAAIB1l9TCKTrMMWwU61ekflfLj90yAOuAAKKqjEbdimZVgK1Ii6AzP100QHta3QAAwEAAwIAA20AA6IGAwABGwQ", # fileID
+            photo="AgACAgUAAxkBAAIaGV9qJdUR79nOKU3zMCQ-dfPbFehrAAImqzEbb_lRV41iu9OqGdQfxbpma3QAAwEAAwIAA20AA30rBwABGwQ",  # fileID
             # photo="AgACAgUAAxkBAAMMX1umgN2gFleA_S0tFOuqWsypMHgAAm2rMRvT8tlWeV44TIpQ__QP-WBsdAADAQADAgADbQADpaUBAAEbBA", # mir bot
             caption="Hi Summiteer! Remember to share your activity with us on Instagram @nus_mountaineering and #NUSummiteers! You will earn an extra chance in the lucky draw daily when you tag us! Stay tuned for updates here! Also, check out our site: https://nus-mir.com/nusummiteers/",
             reply_markup=reply_markup)
@@ -137,8 +137,8 @@ def Submitted(update, context):
         from_chat_id=update.effective_chat.id,
         message_id=update.message.message_id)
     # send timestamp to channel
-	text = f"Name: *{update.message.from_user.first_name}* `t.me/{update.message.from_user.username}`\nTime: {dt}"
-	context.bot.send_message(
+    dt = update.message \
+        .date \
         .astimezone(tz=tz) \
         .strftime(db.DtFormat)
     text = f"Name: *{update.message.from_user.first_name}* `t.me/{update.message.from_user.username}`\nTime: {dt}"
