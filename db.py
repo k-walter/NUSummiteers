@@ -71,12 +71,13 @@ def GetPointsAndDate(uname):
     try:
         cells = Points.findall(uname, in_column=1)
         qry = [f"C{i.row}:D{i.row}" for i in cells if i]
-        # [[['Fri 8/5/2020 8:00:00', '1']], [['Sun 17/5/2020 8:00:00', '2']]]
+        # [[['Fri 8/5/2020 8:00:00', '1']], [['Sun 17/5/2020 8:00:00']]]
         res = Points.batch_get(qry)
-        res = [i[0] for i in res if i and i[0][1]]
-        res = [(datetime.strptime(d, DtFormat), int(p)) for d, p in res]
-        pts = sum(p for _, p in res)
-        dt = max(d for d, _ in res)
+        validRes = (i[0] for i in res if all((i, i[0], len(i[0]) == 2)))
+        formattedRes = [(datetime.strptime(d, DtFormat), int(p))
+                        for d, p in validRes]
+        pts = sum(p for _, p in formattedRes)
+        dt = max(d for d, _ in formattedRes)
         return pts, dt
     except Exception as e:
         logging.warning(e)
