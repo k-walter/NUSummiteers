@@ -3,6 +3,7 @@ import db
 import yaml
 import handler
 from telegram import InputMediaPhoto, InputMediaVideo
+from telegram.ext.dispatcher import run_async
 from datetime import timezone, timedelta, datetime
 import logging
 
@@ -34,37 +35,38 @@ def Schedule(job_queue):
     with open("schedule.yml") as f:
         jobs = yaml.load(f, Loader=yaml.FullLoader)
     for job in jobs:
-        try:
-            text = job.get("text", None)
-            dt = datetime(*job["datetime"], tzinfo=tz)
-            # skip overdue messages
-            if dt < datetime.now(tz) and not test:
-                continue
-
-            if test:
-                dt = 3
-
-            # poll message
-            if "options" in job:
-                job_queue.run_once(SendPoll(job["options"], text), dt)
-
-            # media message
-            elif "media" in job:
-                media = job["media"]
-                if len(media) == 1:
-                    job_queue.run_once(SendMedia(media[0], text), dt)
-                else:
-                    job_queue.run_once(SendMediaGroup(media, text), dt)
-
-            # text message
-            else:
-                job_queue.run_once(SendMessage(text), dt)
-
-        except Exception as e:
-            logging.error(e)
-
+        ScheduleJob(job, job_queue)
         if test:
             return
+
+
+@db.log_error
+@run_async
+def ScheduleJob(job, job_queue):
+    text = job.get("text", None)
+    dt = datetime(*job["datetime"], tzinfo=tz)
+    # skip overdue messages
+    if dt < datetime.now(tz) and not test:
+        return
+
+    if test:
+        dt = 3
+
+    # poll message
+    if "options" in job:
+        job_queue.run_once(SendPoll(job["options"], text), dt)
+
+    # media message
+    elif "media" in job:
+        media = job["media"]
+        if len(media) == 1:
+            job_queue.run_once(SendMedia(media[0], text), dt)
+        else:
+            job_queue.run_once(SendMediaGroup(media, text), dt)
+
+    # text message
+    else:
+        job_queue.run_once(SendMessage(text), dt)
 
 
 def SendMessage(text):
