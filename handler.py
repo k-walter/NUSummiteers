@@ -23,6 +23,7 @@ goBackMarkup = InlineKeyboardMarkup([
     [InlineKeyboardButton("⬅ Back to Start", callback_data=START)],
     [InlineKeyboardButton("❌ End", callback_data=END)],
 ])
+expiryDt = datetime(2020, 9, 28, tzinfo=tz)
 
 
 def send_typing_action(func):
@@ -79,8 +80,8 @@ def Start(update, context):
     # Send message with text and appended InlineKeyboard
     if isNewConvo:
         update.message.reply_photo(
-            # photo="AgACAgUAAxkBAAIaGV9qJdUR79nOKU3zMCQ-dfPbFehrAAImqzEbb_lRV41iu9OqGdQfxbpma3QAAwEAAwIAA20AA30rBwABGwQ",  # fileID
-            photo="AgACAgUAAxkBAAMMX1umgN2gFleA_S0tFOuqWsypMHgAAm2rMRvT8tlWeV44TIpQ__QP-WBsdAADAQADAgADbQADpaUBAAEbBA",  # mir bot
+            photo="AgACAgUAAxkBAAIaGV9qJdUR79nOKU3zMCQ-dfPbFehrAAImqzEbb_lRV41iu9OqGdQfxbpma3QAAwEAAwIAA20AA30rBwABGwQ",  # fileID
+            # photo="AgACAgUAAxkBAAMMX1umgN2gFleA_S0tFOuqWsypMHgAAm2rMRvT8tlWeV44TIpQ__QP-WBsdAADAQADAgADbQADpaUBAAEbBA",  # mir bot
             caption="Hi Summiteer! Remember to share your activity with us on Instagram @nus_mountaineering and #NUSummiteers! You will earn an extra chance in the lucky draw daily when you tag us! Stay tuned for updates here! Also, check out our site: https://nus-mir.com/nusummiteers/",
             reply_markup=reply_markup)
     else:
@@ -162,6 +163,8 @@ def Submitted(update, context):
 
 
 def RejectSubmission(update, context):
+    # valid time
+    isOverdue = datetime.now(tz) >= expiryDt
     # get username, original message_id
     reply = None
     if update.message:
@@ -171,11 +174,15 @@ def RejectSubmission(update, context):
         query = update.callback_query
         uname = query.from_user.username
     # send warning
-    if db.CanSubmit(uname):
+    if not isOverdue and db.CanSubmit(uname):
         return False
+    # valid time
+    msg = "Sorry, we are not accepting submissions from unregistered persons. If this is an error, please `Ask A Question` and we will get back to you soon."
+    if isOverdue:
+        msg = "Thank you for participating in NUSummiteers! Last submission have closed at 2359!"
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="Sorry, we are not accepting submissions from unregistered persons. If this is an error, please `Ask A Question` and we will get back to you soon.",
+        text=msg,
         parse_mode="Markdown",
         reply_to_message_id=reply,)
     return True
@@ -236,8 +243,7 @@ def Leaderboard(update, context):
 
 
 def formatLeader(row):
-    STRING = "{:>2}. {} {:<20} [{:,}]"
-    print(row)
+    STRING = "{:>2}. {} {:<18} [{:,}]"
     rank, name, pts = row
     # map rank to category
     CATS = "🟨⬜🟫⬛️"
@@ -249,6 +255,6 @@ def formatLeader(row):
             cat = T
             break
     # truncate name
-    if len(name) > 20:
-        name = name[:20-3] + "..."
+    if len(name) > 18:
+        name = name[:18-3] + "..."
     return STRING.format(rank, cat, name, pts)
