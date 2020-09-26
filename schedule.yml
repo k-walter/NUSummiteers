@@ -22,6 +22,20 @@
   media:
     - photo: AgACAgUAAxkBAAIdwF9rZDGHbzqB5TzlfVcqe3SQEV3BAAKFqjEbYWhgV18tbiVy8A_5Jk_NbHQAAwEAAwIAA20AA8z4AAIbBA
 
+- datetime: [2020, 9, 25, 5]
+  text: "The competition is heating up: we have a new leader yet again, and what a close fight! Keep on running, hiking and climbing, fellow Summiteers - 3 more days to go!"
+  media:
+    - photo: AgACAgUAAxkBAAIhB19tAAGFY2uyrPhCaiN6eo6bWkYSkgACIaoxG2FoaFdEXie-0dKwcb6fwmx0AAMBAAMCAANtAAP2BAEAARsE
+
+- datetime: [2020, 9, 26, 5]
+  media:
+    - photo: AgACAgUAAxkBAAIkOF9uQHGDBIrMkplUtO7JiBjXWJZmAAJoqjEbyr1xV-nu3b6ZRmy-gb-ObHQAAwEAAwIAA20AA8hUAQABGwQ
+
+- datetime: [2020, 9, 27, 5]
+  text: "WOW, some of you have scaled to some great heights! Onward to the last day!"
+  media:
+    - photo: AgACAgUAAxkBAAIp4F9vrB3IOhC171siDJsPcicAAaDrqQAC96sxG_NbeFfC-xczJlxarc1OzWx0AAMBAAMCAANtAAN7HgEAARsE
+
 ##### Fun Facts #####
 
 - datetime: [2020, 9, 19, 12]
@@ -153,5 +167,20 @@
 - datetime: [2020, 9, 26, 20]
   text: "📣Share pictures and/or video of your activities on our Instagram Story @nus_mountaineering, and use the hashtag #NUSummiteers to earn an extra chance for the lucky draw today! <i>Ensure your account is public</i> so we can share your tagged stories!"
 
-- datetime: [2020, 9, 25, 21]
-  text: "⏫ Double-Up Saturday! ⏫\nWe’re two days away from the end of NUSummiteers! To spur you on, all valid <a href='https://nusmountaineeringcom.files.wordpress.com/2020/09/photo_2020-09-18_21-43-49.jpg'>Ground Cardio</a> activities completed tomorrow (26 September) will receive double the points!!\n\n✅ To qualify for double-up:\n1. Activities <u><b>MUST</b></u> be started and completed on <u><b>26 September</b></u>.\n2. Timestamps <u><b>MUST</b></u> be provided along with submissions. No timestamps, no double-up! (Eg. A selfie with a shot of your watch during the activity OR screen recording of phone’s clock)\n3. Submit at least one photo of yourself on 26 September along with your submission. (Optional)\n\nHurry, get out there!"
+- datetime: [2020, 9, 25, 19, 30]
+  text: "⏫ Double-Up Saturday! ⏫\nWe’re two days away from the end of NUSummiteers! To spur you on, all valid <a href='https://nusmountaineeringcom.files.wordpress.com/2020/09/photo_2020-09-18_21-43-49.jpg'>Ground Cardio</a> activities completed tomorrow (26 September) will receive double the points!!\n\n✅ To qualify for double-up:\n1. Activities <u><b>MUST</b></u> be started and completed on <u><b>26 September</b></u>.\n2. Timestamps <u><b>MUST</b></u> be provided along with submissions. No timestamps, no double-up! (Eg. A selfie with a shot of your watch during the activity OR screen recording of phone’s clock)\n3. Submit at least one photo of yourself on 26 September along with your submission.\n\nHurry, get out there!"
+  media:
+    - photo: AgACAgUAAxkBAAIi3l9t0RsgfJ7XlFE5HAp0vaqE4t_LAAICqjEb9ylxV688_Ns-EzG8jv7sa3QAAwEAAwIAA20AA8b-AwABGwQ
+
+- datetime: [2020, 9, 26, 18]
+  text: "Ever wondered how an event like NUSummiteers is run? Is the bot really a bot? 🏃🤖⁣\n\nToday, we introduce the team behind the scenes of NUSummiteers – the MIR 20 ExCo!\n\nFrom the get-go, our team was determined to introduce aspiring climbers to the mountains, no easy feat in the current climate. It was only after countless late night discussions that NUSummiteers was conceived, and we are very proud to see it come to fruition as a virtual event! 💻🏞⁣\n\nNow, as we conclude Day 8 of NUSummiteers, we sincerely hope that you’ve been enjoying your journey as an NUSummiteer thus far. We surely have, and even as an ExCo, this journey with NUSummiteers has only brought us even closer! ☺️☀️\n\nRead on for a sneak peek into what we’ve been doing behind the scenes! 😉⁣"
+  media:
+    - photo: AgACAgUAAxkBAAIl219vD66PinYKriJUcWWNzQES1U7UAAIQqjEb9yl5VywAAdziuK-UvMSsxWx0AAMBAAMCAANtAAOdGQEAARsE
+    - photo: AgACAgUAAxkBAAIl3F9vD66IXRuyRv0oLKHFsnplC4pUAAIRqjEb9yl5V7jdFaOrW0CW6PVgbHQAAwEAAwIAA20AAxNdAgABGwQ
+    - photo: AgACAgUAAxkBAAIl3V9vD66LuAg3QDl_DSaDRrUr8L7YAAISqjEb9yl5Vzf69D9xOetOWmsFbHQAAwEAAwIAA20AA1dxAwABGwQ
+    - photo: AgACAgUAAxkBAAIl3l9vD65seN80zzBeuA1tIh3Cl9NAAAITqjEb9yl5VylztGSG_Cp58L-ObHQAAwEAAwIAA20AA1BeAQABGwQ
+
+- datetime: [2020, 9, 27, 8]
+  text: "This could be yours!! 🤩 What are you waiting for?! Last few hours for you to climb that Bukit Timah Hill you’ve been wanting to do so this whole week! Or step out of your doorstep and start climbing the stairs!!🚪🚶It’s your last chance to walk away with these vouchers!! 🤑\n\n👁️ 👄 👁️ <b>View the live leaderboard by clicking ‘Check Leaderboard’</b> to receive real time updates today!\n\n🕰️ <b>Send in your submissions early</b> as the bot closes at 2359! Submissions thereafter will not be entertained. ❌\n\n🎁 The final leaderboard will be announced as soon as the hard-at-work team completes reviewing all submissions post-midnight. Lucky draw prizes will be announced tomorrow evening! More details on prizes collection will be made known soon."
+  media:
+    - photo: AgACAgUAAxkBAAIqQF9vrKtlbevp1AL5hKLHTGBlgL-GAAL4qzEb81t4V75qH6m9VQfNgtcAAWx0AAMBAAMCAANtAAOHewMAARsE
