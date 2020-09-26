@@ -70,15 +70,17 @@ def Start(update, context):
     reply_markup = InlineKeyboardMarkup([
         [InlineKeyboardButton("🎥 Submit Proof", callback_data=SUBMIT)],
         [InlineKeyboardButton("🤔 Ask a Question", callback_data=ASK)],
-        [InlineKeyboardButton("📊 Check Progress", callback_data=PROGRESS)],
+        [InlineKeyboardButton("🧗 Check Progress", callback_data=PROGRESS)],
+        [InlineKeyboardButton("📊 Check Leaderboard",
+                              callback_data=LEADERBOARD)],
         [InlineKeyboardButton("❌ End", callback_data=END)],
     ])
 
     # Send message with text and appended InlineKeyboard
     if isNewConvo:
         update.message.reply_photo(
-            photo="AgACAgUAAxkBAAIaGV9qJdUR79nOKU3zMCQ-dfPbFehrAAImqzEbb_lRV41iu9OqGdQfxbpma3QAAwEAAwIAA20AA30rBwABGwQ",  # fileID
-            # photo="AgACAgUAAxkBAAMMX1umgN2gFleA_S0tFOuqWsypMHgAAm2rMRvT8tlWeV44TIpQ__QP-WBsdAADAQADAgADbQADpaUBAAEbBA", # mir bot
+            # photo="AgACAgUAAxkBAAIaGV9qJdUR79nOKU3zMCQ-dfPbFehrAAImqzEbb_lRV41iu9OqGdQfxbpma3QAAwEAAwIAA20AA30rBwABGwQ",  # fileID
+            photo="AgACAgUAAxkBAAMMX1umgN2gFleA_S0tFOuqWsypMHgAAm2rMRvT8tlWeV44TIpQ__QP-WBsdAADAQADAgADbQADpaUBAAEbBA",  # mir bot
             caption="Hi Summiteer! Remember to share your activity with us on Instagram @nus_mountaineering and #NUSummiteers! You will earn an extra chance in the lucky draw daily when you tag us! Stay tuned for updates here! Also, check out our site: https://nus-mir.com/nusummiteers/",
             reply_markup=reply_markup)
     else:
@@ -217,3 +219,36 @@ def Unknown(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Sorry, I didn't understand that command. Type /start to begin.")
+
+
+@run_async
+@send_typing_action
+@db.log_error
+def Leaderboard(update, context):
+    query = update.callback_query
+    query.answer()
+    res = db.GetLeaderboard(20)
+    rows = [formatLeader(r) for r in res]
+    msg = "<pre>Leaderboard\n" + "\n".join(rows) + "</pre>"
+    context.bot.send_message(chat_id=query.from_user.id,
+                             text=msg, parse_mode="HTML")
+    return START
+
+
+def formatLeader(row):
+    STRING = "{:>2}. {} {:<20} [{:,}]"
+    print(row)
+    rank, name, pts = row
+    # map rank to category
+    CATS = "🟨⬜🟫⬛️"
+    RANKS = [3, 6, 10, 15]
+    cat = "  "
+    for C, T in zip(RANKS, CATS):
+        print(row, C, T, rank <= C)
+        if rank <= C:
+            cat = T
+            break
+    # truncate name
+    if len(name) > 20:
+        name = name[:20-3] + "..."
+    return STRING.format(rank, cat, name, pts)

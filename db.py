@@ -16,6 +16,7 @@ DtFormat = "%a %d/%m/%Y %H:%M:%S"
 Points = sh.worksheet("Points")
 Names = sh.worksheet("Names")
 Poll = sh.worksheet("Poll")
+Leaderboard = sh.worksheet("Leaderboard")
 
 # Helper
 
@@ -65,6 +66,16 @@ def AddToNames(uname, uid):
     except Exception as e:
         logging.warning(e)
         Names.append_row([uname, None, uid])
+
+
+@log_error
+def GetLeaderboard(topX=15):
+    rows = range(3, 3 + topX)
+    qry = [f"H{i}:K{i}" for i in rows]
+    res = Leaderboard.batch_get(qry)
+    formattedRes = [(int(rank), name, int(pts))
+                    for [[rank, pts, _, name]] in res]
+    return formattedRes
 
 
 def GetPointsAndDate(uname):
@@ -131,7 +142,7 @@ def CanSubmit(uname):
 
 @log_error
 def AddSubmission(uname, submittedAt):
-    Points.append_row([uname, None, submittedAt])
+    Points.append_row([uname, None, submittedAt])  # table_range="A1"
 
 
 @log_error

@@ -49,6 +49,8 @@ class TelegramBot():
                     CallbackQueryHandler(
                         handler.Progress, pattern=f"^{handler.PROGRESS}$"),
                     CallbackQueryHandler(
+                        handler.Leaderboard, pattern=f"^{handler.LEADERBOARD}$"),
+                    CallbackQueryHandler(
                         handler.End, pattern=f"^{handler.END}$"),
                 ],
                 handler.SUBMIT: [
@@ -68,6 +70,10 @@ class TelegramBot():
                 handler.PROGRESS: [
                     CallbackQueryHandler(
                         handler.Start, pattern=f"^{handler.START}$"),
+                ],
+                handler.LEADERBOARD: [
+                    CallbackQueryHandler(
+                        handler.Start, pattern=f"^{handler.START}"),
                 ],
                 ConversationHandler.TIMEOUT: [
                     CallbackQueryHandler(handler.End),
