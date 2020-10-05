@@ -36,6 +36,11 @@
   media:
     - photo: AgACAgUAAxkBAAIp4F9vrB3IOhC171siDJsPcicAAaDrqQAC96sxG_NbeFfC-xczJlxarc1OzWx0AAMBAAMCAANtAAN7HgEAARsE
 
+- datetime: [2020, 9, 28, 12, 30]
+  text: "The scores are in and we have our winners! 🌟 It was an exciting week watching the tussle on the leaderboard. More importantly, we are heartened to see everyone getting out there amidst your schedules to run, hike and climb! 😍 ⛰\n\nWe hope you’ve enjoyed yourselves as much as we’ve enjoyed putting this event together. This is not the end though! The lucky draw winners will be picked and announced this evening. 🍀\n\nTo the top 15, congratulations! We will be in touch with you soon!💫"
+  media:
+    - photo: AgACAgUAAxkBAAIuAAFfcMFlIIuLWAbVD1VfZrTNEmcVywAC5KkxG3xAiVe7HDsUKxNObSJ762t0AAMBAAMCAANtAAMOHAQAARsE
+
 ##### Fun Facts #####
 
 - datetime: [2020, 9, 19, 12]
@@ -184,3 +189,18 @@
   text: "This could be yours!! 🤩 What are you waiting for?! Last few hours for you to climb that Bukit Timah Hill you’ve been wanting to do so this whole week! Or step out of your doorstep and start climbing the stairs!!🚪🚶It’s your last chance to walk away with these vouchers!! 🤑\n\n👁️ 👄 👁️ <b>View the live leaderboard by clicking ‘Check Leaderboard’</b> to receive real time updates today!\n\n🕰️ <b>Send in your submissions early</b> as the bot closes at 2359! Submissions thereafter will not be entertained. ❌\n\n🎁 The final leaderboard will be announced as soon as the hard-at-work team completes reviewing all submissions post-midnight. Lucky draw prizes will be announced tomorrow evening! More details on prizes collection will be made known soon."
   media:
     - photo: AgACAgUAAxkBAAIqQF9vrKtlbevp1AL5hKLHTGBlgL-GAAL4qzEb81t4V75qH6m9VQfNgtcAAWx0AAMBAAMCAANtAAOHewMAARsE
+
+- datetime: [2020, 9, 28, 1]
+  text: "Meanwhile, MIR is continuing to explore the possibilities despite the circumstances. If you’d like to find out more, connect with us through <a href='https://linktr.ee/NUSMountaineering'>these channels</a>! Let’s stay in touch! ☺️"
+  media:
+    - photo: AgACAgUAAxkBAAIuZ19wxWMXn_eW5NNka0jLFKKt5Cc8AALpqTEbfECJVyO9Ey3j004PCiBNbHQAAwEAAwIAA20AA8VrAgABGwQ
+
+- datetime: [2020, 9, 28, 22]
+  text: "Have any feedback for NUSummiteers? Help us improve NUSummiteers by sending in your feedback here: 
+https://forms.gle/oz5sNXgG6g5yCTCC6"
+
+- datetime: [2020, 9, 28, 21]
+  text: "Last but not the least, we have our lucky draw winners!!👏  🌟 Once again, thank you for signing up for NUSummiteers. Winners of the lucky draw will be contacted shortly!"
+  media:
+    - photo: AgACAgUAAxkBAAIu0l9x2Ev1J5dwmRFZdbbWg-tsM5NGAAITqzEbnLeRV5kn4I0AAfrmAgXkA2x0AAMBAAMCAANtAAPvgwMAARsE
+
