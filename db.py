@@ -10,7 +10,7 @@ from telegram.ext.dispatcher import run_async
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 gc = gspread.service_account(filename='client_secret.json')
-sh = gc.open_by_url(os.getenv("DRIVE_URL"))
+sh = gc.open_by_url(os.getenv("SHEET_URL"))
 
 # Global variables
 DtFormat = "%a %d/%m/%Y %H:%M:%S"
