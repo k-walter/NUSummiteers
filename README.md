@@ -34,7 +34,7 @@ END_TIMESTAMP=1639065600    # event end
 1. You can run using `venv` or `docker-compose up` (https://docs.docker.com/compose/install/).
 2. To change bot states, edit `bot.py`.
 3. To change each state behavior, edit `handler.py`.
-4. ~~To schedule announcements, edit `schedule.py`.~~ Anyone can schedule announcements in `ANNOUNCE_CHANNEL`! No need to wait fro the developer.
+4. ~~To schedule announcements, edit `schedule.py`.~~ Anyone can schedule announcements in `ANNOUNCE_CHANNEL`! No need to wait for the developer.
 5. To persistent data across restart, edit `db.py` to save in `SHEET_URL`.
 6. If you make any changes to `Dockerfile` or `requirements.txt`, rebuild the image to see your changes, by running `docker-compose build`
 
