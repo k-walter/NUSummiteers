@@ -38,11 +38,14 @@ END_TIMESTAMP=1639065600    # event end
 5. To persistent data across restart, edit `db.py` to save in `SHEET_URL`.
 6. If you make any changes to `Dockerfile` or `requirements.txt`, rebuild the image to see your changes, by running `docker-compose build`
 
-## Coding Conventions
-- Credentials *MUST* be stored in `.env` which will be loaded in `docker-compose` and heroku. Access them using `os.getenv(NAME)`.
+## Lessons Learnt
+- Credentials **MUST** be stored in `.env` which will be loaded in `docker-compose` and heroku. Access them using `os.getenv(NAME)`.
 - Don't `print()`, use `logging.info()`
+- No `@run_async` for critical states, eg submissions, questions
+- `@sidecar` for state callbacks' lifecycle checks
+- `escape_markdown(text, version=2)` for texts with `MarkdownV2`
 - `Upper_case` for public functions
 - `lower_case` for local functions
 - `UPPER_CASE` for constants, eg states
-- Annotate function types for your sanity
-- Keep bot stateless for easier deployment
+- Annotate parameter types for sanity
+- Design bot to be stateless for easier deployment
