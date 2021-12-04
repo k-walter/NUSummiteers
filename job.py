@@ -1,17 +1,18 @@
+import logging
 import os
-import db
+from datetime import timezone, timedelta, datetime
+
 import yaml
-import handler
 from telegram import InputMediaPhoto, InputMediaVideo
 from telegram.ext.dispatcher import run_async
-from datetime import timezone, timedelta, datetime
-import logging
+
+import db
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 tz = timezone(timedelta(hours=8))
-test = False
+test = os.getenv("TEST") != "false"
 
 
 def Broadcast(fn):
@@ -21,7 +22,7 @@ def Broadcast(fn):
         return
 
     if test:
-        fn(69761990)
+        fn(os.getenv("DEBUGGER_ID"))
         return
 
     for tid in tids:
@@ -32,6 +33,7 @@ def Broadcast(fn):
 
 
 def Schedule(job_queue):
+    # job_queue.run_once(SendMessage("Ready? Climb on!"), 0)
     with open("schedule.yml") as f:
         jobs = yaml.load(f, Loader=yaml.FullLoader)
     for job in jobs:
@@ -44,29 +46,35 @@ def Schedule(job_queue):
 @run_async
 def ScheduleJob(job, job_queue):
     text = job.get("text", None)
-    dt = datetime(*job["datetime"], tzinfo=tz)
-    # skip overdue messages
-    if dt < datetime.now(tz) and not test:
+    dt, err = getDatetime(job)
+    if err is not None:
         return
 
-    if test:
-        dt = 3
+    # if test:
+    #     dt = 3
 
-    # poll message
-    if "options" in job:
+    if job.get("options", None):
         job_queue.run_once(SendPoll(job["options"], text), dt)
 
-    # media message
-    elif "media" in job:
+    elif job.get("media", None):
         media = job["media"]
         if len(media) == 1:
             job_queue.run_once(SendMedia(media[0], text), dt)
         else:
             job_queue.run_once(SendMediaGroup(media, text), dt)
 
-    # text message
     else:
         job_queue.run_once(SendMessage(text), dt)
+
+
+def getDatetime(job):
+    if "datetime" not in job:
+        return 0, None
+    dt = datetime(*job["datetime"], tzinfo=tz)
+    isOverdue = dt < datetime.now(tz)
+    if isOverdue:
+        return None, "overdue"
+    return dt, None
 
 
 def SendMessage(text):

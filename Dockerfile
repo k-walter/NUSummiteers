@@ -10,4 +10,4 @@ COPY ./*.py ./
 COPY ./*.yml ./
 COPY ./client_secret.json ./
 
-CMD ["python", "./bot.py"]
+CMD ["python3", "./bot.py"]

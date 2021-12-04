@@ -1,9 +1,10 @@
-import os
-import gspread
 import logging
-from functools import wraps
-from datetime import datetime
+import os
 from collections import defaultdict, OrderedDict
+from functools import wraps
+from typing import Tuple, Iterable
+
+import gspread
 from telegram.ext.dispatcher import run_async
 
 logging.basicConfig(level=logging.DEBUG,
@@ -13,14 +14,13 @@ sh = gc.open_by_url(os.getenv("DRIVE_URL"))
 
 # Global variables
 DtFormat = "%a %d/%m/%Y %H:%M:%S"
-Points = sh.worksheet("Points")
+Points = sh.worksheet("Submissions")
 Names = sh.worksheet("Names")
-Poll = sh.worksheet("Poll")
+# Poll = sh.worksheet("Poll")
 Leaderboard = sh.worksheet("Leaderboard")
 
+
 # Helper
-
-
 def log_error(func):
     @wraps(func)
     def command_func(*args, **kwargs):
@@ -28,6 +28,7 @@ def log_error(func):
             return func(*args, **kwargs)
         except Exception as e:
             logging.error(e)
+
     return command_func
 
 
@@ -51,71 +52,45 @@ def lru_cache(func, maxSize=128):
         if len(cache) > maxSize:
             cache.popitem(last=False)
         return result
+
     return command_func
+
 
 # Main functions
 
 
-@run_async
-def AddToNames(uname, uid):
+def add_new_user(uname: str, uid: int) -> bool:
     # find and save ID
     try:
         c = Names.find(uname, in_column=1)
-        Names.update_cell(c.row, 3, uid)
+        if Names.cell(c.row, 3).value == str(uid):
+            return False
+        logging.info(Names.update_cell(c.row, 3, uid))
     # create ID
-    except Exception as e:
-        logging.warning(e)
-        Names.append_row([uname, None, uid])
+    except:
+        logging.info(Names.append_row([uname, None, uid]))
+    return True
 
 
 @log_error
-def GetLeaderboard(topX=15):
-    rows = range(3, 3 + topX)
-    qry = [f"H{i}:K{i}" for i in rows]
+def GetLeaderboard() -> Iterable[Tuple[int, str, str, int]]:
+    rows = range(3, 3 + 100 - 1)
+    qry = [f"L{i}:O{i}" for i in rows]
     res = Leaderboard.batch_get(qry)
-    formattedRes = [(int(rank), name, int(pts))
-                    for [[rank, pts, _, name]] in res]
-    return formattedRes
+    for row in res:
+        try:
+            [[rank, pts, handle, name]] = row
+            if handle:
+                yield int(rank), handle, name, float(pts)
+        except:
+            continue
+    # formattedRes = [(int(rank), name, int(pts))
+    #                 for [[rank, pts, handle, name]] in res if handle]
+    # return formattedRes
 
 
-def GetPointsAndDate(uname):
-    try:
-        cells = Points.findall(uname, in_column=1)
-        qry = [f"C{i.row}:D{i.row}" for i in cells if i]
-        # [[['Fri 8/5/2020 8:00:00', '1']], [['Sun 17/5/2020 8:00:00']]]
-        res = Points.batch_get(qry)
-        validRes = (i[0] for i in res if all((i, i[0], len(i[0]) == 2)))
-        formattedRes = [(datetime.strptime(d, DtFormat), int(p))
-                        for d, p in validRes]
-        pts = sum(p for _, p in formattedRes)
-        dt = max(d for d, _ in formattedRes)
-        return pts, dt
-    except Exception as e:
-        logging.warning(e)
-        return None, None
 
 
-def GetSIDFromTID(tid):
-    try:
-        c = Names.find(tid, in_column=3)
-        return Names.get(f"D{c.row}"), True
-    except Exception as e:
-        return None, False
-
-
-def GetTIDFromSID(sid):
-    try:
-        c = Names.find(si, in_column=4)
-        return Names.get(f"C{c.row}"), True
-    except Exception as e:
-        logging.error(e)
-        return None, False
-
-
-@log_error
-def SaveSIDWithTID(tid, sid):
-    c = Names.find(tid, in_column=3)
-    Names.update(f"D{c.row}", sid)
 
 
 @run_async
@@ -133,16 +108,16 @@ def UpdatePoll(pid, option):
 
 @log_error
 @lru_cache
-def CanSubmit(uname):
+def CanSubmit(uname: str) -> bool:
     MakeUnique()
-    c = Names.find(uname, in_column=1)
-    out = Names.get(f"E{c.row}")[0][0]
+    cell = Names.find(uname, in_column=1)
+    out = Names.get(f"D{cell.row}")[0][0]
     return out == "YES"
 
 
 @log_error
-def AddSubmission(uname, submittedAt):
-    Points.append_row([uname, None, submittedAt])  # table_range="A1"
+def AddSubmission(uname: str, submittedAt: str, fileName: str) -> None:
+    Points.append_row([uname, None, submittedAt, fileName])  # table_range="A1"
 
 
 @log_error
@@ -183,7 +158,7 @@ def MakeUnique():
 
         # delete extra rows
         for i in rows[1:]:
-            Names.delete_rows(i+2)
+            Names.delete_rows(i + 2)
 
     # update unique handlers
     Names.batch_update(updates, value_input_option="USER_ENTERED")

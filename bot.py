@@ -1,9 +1,11 @@
-import os
-import job
-import handler
 import logging
-from datetime import time, timedelta, timezone
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler, ConversationHandler, CallbackQueryHandler, PollHandler, BaseFilter
+import os
+from datetime import timedelta, timezone
+
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Dispatcher, JobQueue
+
+import handle
+import job
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -12,83 +14,34 @@ TZ = timezone(timedelta(hours=8))
 
 class TelegramBot():
     def __init__(self):
-        self.updater = Updater(
+        self.updater: Updater = Updater(
             token=os.getenv("BOT_TOKEN"),
             use_context=True,
-            # user_sig_handler=handler.End,
         )
-        self.dispatcher = self.updater.dispatcher
-        self.job_queue = self.updater.job_queue
+        self.dispatcher: Dispatcher = self.updater.dispatcher
+        self.job_queue: JobQueue = self.updater.job_queue
 
         # Filters
-        self.isTextMsg = Filters.text & (~Filters.command)
-        self.isUpload = Filters.video | Filters.photo | Filters.document | Filters.animation
+        self.TEXT_MSG = Filters.text & (~Filters.command)
+        self.UPLOAD = Filters.video | Filters.photo | Filters.document | Filters.animation
 
         # Attach handlers
-        self.dispatcher.add_handler(self.ConversationHandler())
-        self.dispatcher.add_handler(PollHandler(handler.UpdatePoll))
-        self.dispatcher.add_handler(
-            MessageHandler(Filters.all, handler.Unknown))
+        self.dispatcher.add_handler(CommandHandler(handle.ASK, handle.Ask))
+        self.dispatcher.add_handler(CommandHandler(handle.LEADERBOARD, handle.Leaderboard, run_async=True))
+        self.dispatcher.add_handler(MessageHandler(self.UPLOAD, handle.Submit))
+        # self.dispatcher.add_handler(PollHandler(handle.UpdatePoll))
+        self.dispatcher.add_handler(MessageHandler(Filters.all, handle.Start, run_async=True))
 
         # Add schedules
         job.Schedule(self.job_queue)
 
         # Listen and Serve
-        self.updater.start_polling()    # non-blocking
-        self.updater.idle()             # blocking
-
-    def ConversationHandler(self):
-        return ConversationHandler(
-            entry_points=[CommandHandler('start', handler.Start)],
-            states={
-                handler.START: [
-                    CallbackQueryHandler(
-                        handler.Submit, pattern=f"^{handler.SUBMIT}$"),
-                    CallbackQueryHandler(
-                        handler.Ask, pattern=f"^{handler.ASK}$"),
-                    CallbackQueryHandler(
-                        handler.Progress, pattern=f"^{handler.PROGRESS}$"),
-                    CallbackQueryHandler(
-                        handler.Leaderboard, pattern=f"^{handler.LEADERBOARD}$"),
-                    CallbackQueryHandler(
-                        handler.End, pattern=f"^{handler.END}$"),
-                ],
-                handler.SUBMIT: [
-                    MessageHandler(self.isUpload, handler.Submitted),
-                    CallbackQueryHandler(
-                        handler.Start, pattern=f"^{handler.START}$"),
-                    CallbackQueryHandler(
-                        handler.End, pattern=f"^{handler.END}$"),
-                ],
-                handler.ASK: [
-                    MessageHandler(self.isTextMsg, handler.Asked),
-                    CallbackQueryHandler(
-                        handler.Start, pattern=f"^{handler.START}$"),
-                    CallbackQueryHandler(
-                        handler.End, pattern=f"^{handler.END}$"),
-                ],
-                handler.PROGRESS: [
-                    CallbackQueryHandler(
-                        handler.Start, pattern=f"^{handler.START}$"),
-                ],
-                handler.LEADERBOARD: [
-                    CallbackQueryHandler(
-                        handler.Start, pattern=f"^{handler.START}"),
-                ],
-                ConversationHandler.TIMEOUT: [
-                    CallbackQueryHandler(handler.End),
-                ],
-            },
-            fallbacks=[
-                PollHandler(handler.UpdatePoll),
-                CallbackQueryHandler(handler.Unknown),
-            ],
-            allow_reentry=True
-        )
+        self.updater.start_polling()  # non-blocking
+        self.updater.idle()           # blocking
 
 
 def main():
-    bot = TelegramBot()
+    TelegramBot()
 
 
 if __name__ == "__main__":
